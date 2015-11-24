@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="isometric" renderorder="right-down" width="25" height="25" tilewidth="64" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="isometric_grass_and_water" tilewidth="64" tileheight="64" tilecount="24">
+  <tileoffset x="0" y="16"/>
+  <image source="isometric_grass_and_water.png" width="256" height="384"/>
+  <terraintypes>
+   <terrain name="Grass" tile="0"/>
+   <terrain name="Water" tile="22"/>
+  </terraintypes>
+  <tile id="0" terrain="0,0,0,0">
+   <properties>
+    <property name="tID" value="0"/>
+   </properties>
+  </tile>
+  <tile id="1" terrain="0,0,0,0">
+   <properties>
+    <property name="tID" value="1"/>
+   </properties>
+  </tile>
+  <tile id="2" terrain="0,0,0,0">
+   <properties>
+    <property name="tID" value="2"/>
+   </properties>
+  </tile>
+  <tile id="3" terrain="0,0,0,0">
+   <properties>
+    <property name="tID" value="3"/>
+   </properties>
+  </tile>
+  <tile id="4" terrain="0,0,0,1">
+   <properties>
+    <property name="tID" value="4"/>
+   </properties>
+  </tile>
+  <tile id="5" terrain="0,0,1,0">
+   <properties>
+    <property name="tID" value="5"/>
+   </properties>
+  </tile>
+  <tile id="6" terrain="1,0,0,0">
+   <properties>
+    <property name="tID" value="6"/>
+   </properties>
+  </tile>
+  <tile id="7" terrain="0,1,0,0">
+   <properties>
+    <property name="tID" value="7"/>
+   </properties>
+  </tile>
+  <tile id="8" terrain="0,1,1,1">
+   <properties>
+    <property name="tID" value="8"/>
+   </properties>
+  </tile>
+  <tile id="9" terrain="1,0,1,1">
+   <properties>
+    <property name="tID" value="9"/>
+   </properties>
+  </tile>
+  <tile id="10" terrain="1,1,1,0">
+   <properties>
+    <property name="tID" value="10"/>
+   </properties>
+  </tile>
+  <tile id="11" terrain="1,1,0,1">
+   <properties>
+    <property name="tID" value="11"/>
+   </properties>
+  </tile>
+  <tile id="12" terrain="0,0,1,1">
+   <properties>
+    <property name="tID" value="12"/>
+   </properties>
+  </tile>
+  <tile id="13" terrain="1,0,1,0">
+   <properties>
+    <property name="tID" value="13"/>
+   </properties>
+  </tile>
+  <tile id="14" terrain="1,1,0,0">
+   <properties>
+    <property name="tID" value="14"/>
+   </properties>
+  </tile>
+  <tile id="15" terrain="0,1,0,1">
+   <properties>
+    <property name="tID" value="15"/>
+   </properties>
+  </tile>
+  <tile id="16" terrain="0,0,1,1">
+   <properties>
+    <property name="tID" value="16"/>
+   </properties>
+  </tile>
+  <tile id="17" terrain="1,0,1,0">
+   <properties>
+    <property name="tID" value="17"/>
+   </properties>
+  </tile>
+  <tile id="18" terrain="1,1,0,0">
+   <properties>
+    <property name="tID" value="18"/>
+   </properties>
+  </tile>
+  <tile id="19" terrain="0,1,0,1">
+   <properties>
+    <property name="tID" value="19"/>
+   </properties>
+  </tile>
+  <tile id="20" terrain="0,1,1,0">
+   <properties>
+    <property name="tID" value="20"/>
+   </properties>
+  </tile>
+  <tile id="21" terrain="1,0,0,1">
+   <properties>
+    <property name="tID" value="21"/>
+   </properties>
+  </tile>
+  <tile id="22" terrain="1,1,1,1">
+   <properties>
+    <property name="tID" value="22"/>
+   </properties>
+  </tile>
+  <tile id="23" terrain="1,1,1,1">
+   <properties>
+    <property name="tID" value="23"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="25" height="25">
+  <data encoding="base64" compression="zlib">
+   eJx1llmSwjAMROVgtlkSCAzk/icdp0pdvDTmQ4UdW1urJbNExNLk2eS7yS3lJ78tOD82GVJKk4r9Lvc1z3ZYS3+VMc9WOaUf+ZhNv+Cu25Z/na2xTylHO78jP+XgPirue066P3fuaK9cZnzXGeMldsxJMnbw5fqUOeybXJsc4GMXW0wYK79/pZ7HUsyGcvL7lF6sqvmMO8Rin/bW398mZ9SGvPH6ENeaPkacya5weqRt8djzkH3qEbt1f0NcBfhX7MVh+mFtqEdO64wYkXusxT22faT1bDpez2I+hfkBfoXduWNfvUm8en3J+lw6eNd49SHtaz3GFoOKutTYcqHAFv34THl2fJCzypl9zVxkS/q8pxw5H8l5xXkx3+zHYn7IZ3Fmsnx8hg3p4wnfip/8kZ9bbOc4Z/EU73wnNxxDzkHnnfcj7zEuzgB/BzgLOBMG09Ob4viKQ3/xetMWYOh5eG+SY3NsucFe4ExWD5EH5HSv9sTdec9euML+msMjXr3s+Pgb9OkdYT7iKnlGbnn/Ez/OA2LpPFS+E/yTl6z5YHufN+Sc+/KZyllHXa8/ZzB1/A0bOmvaJlYl3jnc8/npf4/j6vz7B9hfETM=
+  </data>
+ </layer>
+</map>
