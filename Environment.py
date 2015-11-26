@@ -268,8 +268,8 @@ def avgVis(step, worldHistory):
 def speedVis(creature):
     return creature[7], creature[9]
 
-def speedReprThresh(creature):
-    return creature[7], creature[5]
+def speedReprThreshVis(creature):
+    return creature[7], creature[5], creature[9]
 
 def DisplaySim(worldHistory, resourcesGRMaxE):
     #tg = TestGraphics()
@@ -281,12 +281,12 @@ def DisplaySim(worldHistory, resourcesGRMaxE):
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
     #Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
     #Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[974][0], 232, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 975th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[959][0], 231, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 960th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[945][0], 234, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 944th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[931][0], 235, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 930th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[899][0], 233, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 898th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[915][0], 236, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 914th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[974][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 975th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[959][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 960th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[945][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 944th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[931][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 930th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[899][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 898th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[915][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 914th step')
     plt.show()
     print time.time() - t0
 
