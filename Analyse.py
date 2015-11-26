@@ -48,15 +48,21 @@ def plotScatter3D(subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y", zl
 '''
 func must take in Creature numpy representation and return x, y value for plot
 '''
-def plotForCreatures(func, livingCreatures, subplot, xlabel='x', ylabel='y', zlabel='z', title='x vs y vs z'):
+def plotForCreatures(func, livingCreatures, subplot, xlabel='x', ylabel='y', zlabel='z', title=''):
     xRes = np.ndarray(len(livingCreatures))
     yRes = np.ndarray(len(livingCreatures))
     zRes = np.ndarray(len(livingCreatures))
-    for i in xrange(len(livingCreatures)):
-        xRes[i], yRes[i], zRes[i] = func(livingCreatures[i])
+    dims = len(func(livingCreatures[0]))
     creatSpec = findSpecies(livingCreatures)
     colors = (np.array(creatSpec[:,1])-1)/float(np.max(creatSpec[:,1])-1)
-    plotScatter3D(subplot, xRes, yRes, zRes, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, title=title, colour=colors)
+    if dims == 3:
+        for i in xrange(len(livingCreatures)):
+            xRes[i], yRes[i], zRes[i] = func(livingCreatures[i])
+        plotScatter3D(subplot, xRes, yRes, zRes, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, title=title, colour=colors)
+    elif dims == 2:
+        for i in xrange(len(livingCreatures)):
+            xRes[i], yRes[i] = func(livingCreatures[i])
+        plotScatter(subplot, xRes, yRes, xlabel=xlabel, ylabel=ylabel, title=title, colour=colors)
 
 '''
 livingCreatures should be formatted as a numpy array as it is stored in worldHist
