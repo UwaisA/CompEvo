@@ -1,5 +1,4 @@
 import numpy as np
-import time
 
 __module__ = ''' This is to classify creature objects in environment
              Check readme.txt for more info
