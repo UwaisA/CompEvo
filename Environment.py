@@ -271,11 +271,11 @@ def speedVis(creature):
 def speedReprThreshVis(creature):
     return creature[7], creature[5], creature[9]
 
-def DisplaySim(worldHistory, resourcesGRMaxE):
-    #tg = TestGraphics()
-    t0 = time.time()
-    #tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
-    #pygame.quit()
+def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True):
+    if displayVisualSim:
+        tg = TestGraphics()
+        tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
+        pygame.quit()
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
@@ -288,9 +288,8 @@ def DisplaySim(worldHistory, resourcesGRMaxE):
     Analyse.plotForCreatures(speedReprThreshVis, worldHistory[899][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 898th step')
     Analyse.plotForCreatures(speedReprThreshVis, worldHistory[915][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 914th step')
     plt.show()
-    print time.time() - t0
 
-def DisplaySavedSim():
+def DisplaySavedSim(displayVisualSim=True):
     filenames = []
     mydir = os.path.dirname(os.path.realpath(__file__))
     subdir = 'Simulations/'
@@ -316,7 +315,7 @@ def DisplaySavedSim():
         resourcesGRMaxE = data[1]
         natVar = data[2]
         
-    DisplaySim(worldHistory, resourcesGRMaxE)
+    DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim)
 
 def dump(obj, nested_level=0, output=sys.stdout):
     spacing = '   '
@@ -343,6 +342,6 @@ def dump(obj, nested_level=0, output=sys.stdout):
 def quickCopy(d):
     return pickle.loads(pickle.dumps(d, -1))
 
-def test_Res(steps=300):
+def test_Res(steps=300, displayVisualSim=True):
     RunSim(steps)
-    DisplaySavedSim()
+    DisplaySavedSim(displayVisualSim)
