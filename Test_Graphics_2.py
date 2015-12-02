@@ -7,22 +7,32 @@ from Creature import Creature
 import numpy as np
 
 class TestGraphics(object):
-    SIZE = [1600, 800]
     BLACK = [0, 0, 0]
     WHITE = [255, 255, 255]
     RED = [255, 0, 0]
     BLUE = [0, 0, 255]
-    tw = 64 # Tile width can get from tmx
-    th = 32 # Tile height """"""""
+    # tw = 64 # Tile width can get from tmx
+    # th = 32 # Tile height """"""""
     
     def __init__(self):
         pygame.init()
         os.environ['SDL_VIDEO_CENTERED'] = '1'
+        self.clock = pygame.time.Clock()
+        mapFile = "isometric_grass_and_water2.tmx" #This is the filename of the map to be used for the display of this simulation
+        mydir = os.path.dirname(os.path.realpath(__file__))
+        subdir = 'Maps'
+        mapfilepath = os.path.join(mydir, subdir, mapFile)
+        tmxdata = TiledMap(mapfilepath)
+        self.tw = int(tmxdata.get_tile_properties(0,0,0)['width'])
+        self.th = int(tmxdata.get_tile_properties(0,0,0)['height']/2.)
+        self.gridWidth = int(tmxdata.properties['Width'])
+        self.gridHeight = int(tmxdata.properties['Width'])
+        self.SIZE = [self.gridWidth*self.tw, self.gridHeight*self.th]
         self.screen = pygame.display.set_mode(self.SIZE)
         pygame.display.set_caption("Creature Simulation")
         pygame.event.set_allowed(QUIT)
         self.screen.fill(self.WHITE)
-        self.clock = pygame.time.Clock()
+        self.gameMap = load_pygame(mapfilepath)
 
     def TransformMap(self, pos):
         new_pos_x = self.SIZE[0]/2 + (self.tw/2) * (pos[0] - pos[1] - 1)
@@ -39,28 +49,28 @@ class TestGraphics(object):
         new_pos_y = (pos[0] + pos[1])/2
         return np.array([new_pos_x, new_pos_y])
 
-    def DisplayMap(self, livingCreatures, resources, mapFile="isometric_grass_and_water2.tmx"):
-        mydir = os.path.dirname(os.path.realpath(__file__))
-        subdir = 'Maps'
-        mapfilepath = os.path.join(mydir, subdir, mapFile)
-        gameMap = load_pygame(mapfilepath)
+    def DisplayMap(self, livingCreatures, resources):
+        # mydir = os.path.dirname(os.path.realpath(__file__))
+        # subdir = 'Maps'
+        # mapfilepath = os.path.join(mydir, subdir, mapFile)
+        # gameMap = load_pygame(mapfilepath)
         images = []
         
-        for y in xrange(25):
-            for x in xrange(25):
-                image = gameMap.get_tile_image(x,y,0)
+        for y in xrange(self.gridHeight):
+            for x in xrange(self.gridWidth):
+                image = self.gameMap.get_tile_image(x,y,0)
                 images.append(image)
                 
-        for y in xrange(25):
-            for x in xrange(25):
+        for y in xrange(self.gridHeight):
+            for x in xrange(self.gridWidth):
                 trans_pos = self.TransformMap(np.array([x, y]))
-                self.screen.blit(images[y*25 + x],(trans_pos[0], trans_pos[1]))
+                self.screen.blit(images[y*self.gridWidth + x],(trans_pos[0], trans_pos[1]))
                 
         for x,y in np.ndindex((len(resources[0]), len(resources[0][0]))):
             if resources[2][x][y] > 0:
                 trans_pos = self.TransformResourcePos(np.array([x,y]))
                 colour = [self.RED[0]*resources[0][x][y]/float(resources[2][x][y]), self.RED[1], self.RED[2]]
-                pygame.draw.polygon(self.screen, colour, [(trans_pos[0], trans_pos[1]+2), (trans_pos[0]+28, trans_pos[1]+16), (trans_pos[0], trans_pos[1]+30), (trans_pos[0]-28, trans_pos[1]+16)], 2)
+                pygame.draw.polygon(self.screen, colour, [(trans_pos[0], trans_pos[1]+int(self.th/16.)), (trans_pos[0]+int(self.tw*7./16.), trans_pos[1]+int(self.th/2.)), (trans_pos[0], trans_pos[1]+int(self.th*15./16.)), (trans_pos[0]-int(self.tw*7./16.), trans_pos[1]+int(self.tw/4.))], 2)
         
         for creature in livingCreatures.values():
             trans_pos = self.TransformPos(np.array([creature.pos()[0], creature.pos()[1]]))
@@ -73,17 +83,17 @@ class TestGraphics(object):
         pygame.display.flip()
         self.clock.tick(15)
 
-    def DisplaySavedMap(self, worldHistory, resourcesGRMaxE, mapFile="isometric_grass_and_water2.tmx"):
-        mydir = os.path.dirname(os.path.realpath(__file__))
-        subdir = 'Maps'
-        mapfilepath = os.path.join(mydir, subdir, mapFile)
-        gameMap = load_pygame(mapfilepath)
+    def DisplaySavedMap(self, worldHistory, resourcesGRMaxE):
+        # mydir = os.path.dirname(os.path.realpath(__file__))
+        # subdir = 'Maps'
+        # mapfilepath = os.path.join(mydir, subdir, mapFile)
+        # gameMap = load_pygame(mapfilepath)
+        # tmxdata = TiledMap(mapfilepath)
         images = []
-        tmxdata = TiledMap(mapfilepath)
         
-        for y in xrange(25):
-            for x in xrange(25):
-                image = gameMap.get_tile_image(x,y,0)
+        for y in xrange(self.gridHeight):
+            for x in xrange(self.gridWidth):
+                image = self.gameMap.get_tile_image(x,y,0)
                 images.append(image)
         
         done = False
@@ -95,8 +105,8 @@ class TestGraphics(object):
             for step in xrange(len(worldHistory)):
                 i = 0
                 self.screen.fill(self.WHITE)
-                for y in xrange(25):
-                    for x in xrange(25):
+                for y in xrange(self.gridHeight):
+                    for x in xrange(self.gridWidth):
                         trans_pos = self.TransformMap(np.array([x, y]))
                         self.screen.blit(images[i],(trans_pos[0], trans_pos[1]))
                         i += 1
@@ -106,7 +116,7 @@ class TestGraphics(object):
                     if resourcesGRMaxE[0][x][y] > 0:
                         trans_pos = self.TransformResourcePos(np.array([x,y]))
                         colour = [self.RED[0]*resources[x][y]/float(resourcesGRMaxE[1][x][y]), self.RED[1], self.RED[2]]
-                        pygame.draw.polygon(self.screen, colour, [(trans_pos[0], trans_pos[1]+2), (trans_pos[0]+28, trans_pos[1]+16), (trans_pos[0], trans_pos[1]+30), (trans_pos[0]-28, trans_pos[1]+16)], 2)
+                        pygame.draw.polygon(self.screen, colour, [(trans_pos[0], trans_pos[1]+int(self.th/16.)), (trans_pos[0]+int(self.tw*7./16.), trans_pos[1]+int(self.th/2.)), (trans_pos[0], trans_pos[1]+int(self.th*15./16.)), (trans_pos[0]-int(self.tw*7./16.), trans_pos[1]+int(self.tw/4.))], 2)
                 #for resource in worldHistory[step][2].values():
                 #    trans_pos = self.TransformResourcePos(np.array([resource.pos()[0], resource.pos()[1]]))
                 #    colour = [self.RED[0]*(resource.E()/resource.maxE()),self.RED[1],self.RED[2]]

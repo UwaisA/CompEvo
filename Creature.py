@@ -1,4 +1,6 @@
 import numpy as np
+import os
+from pytmx import *
 
 __module__ = ''' This is to classify creature objects in environment
              Check readme.txt for more info
@@ -7,7 +9,7 @@ __module__ = ''' This is to classify creature objects in environment
 # CREATURE CLASS ______________________________________________________________
 class Creature(object):
     ''' Creature Object to be tested in virtual environment '''
-    pxPerTile = 32
+    # pxPerTile = 32
 
     # Initialises Creature with position, genetics and physical condition
     def __init__(self, creatureNo, creature=None, environment=None,
@@ -29,6 +31,12 @@ class Creature(object):
                       'Speed': Speed, 'MouthSize': MouthSize, 'Vis': Vis}
         self.__physChar = {'energy': E}
         self.__pos = pos
+        mapFile = "isometric_grass_and_water2.tmx" #This is the filename of the map to be used for the display of this simulation
+        mydir = os.path.dirname(os.path.realpath(__file__))
+        subdir = 'Maps'
+        mapfilepath = os.path.join(mydir, subdir, mapFile)
+        tmxdata = TiledMap(mapfilepath)
+        self.pxPerTile = int(tmxdata.get_tile_properties(0,0,0)['height']/2.)
     
     def __repr__(self):
         return "Creature: pos=%s"%(self.__pos)
@@ -100,7 +108,7 @@ class Creature(object):
         else:
             newMov = maxDir*((int)(self.gen()['Speed']*3))
         #bounding the creature to the map
-        self.setPos((newMov+self.pos())%800)
+        self.setPos((newMov+self.pos())%(mapH*self.pxPerTile))
 
     def die(self):
         try:

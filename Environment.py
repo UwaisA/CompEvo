@@ -26,8 +26,13 @@ class Environment(object):
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([300,700])),
                                   3: Creature(creatureNo=3, environment=self, pos=np.array([600,220]))}
         self.__deadCreatures = {}
-        self.__mapW = 25
-        self.__mapH = 25
+        mapFile = "isometric_grass_and_water2.tmx" #This is the filename of the map to be used for the display of this simulation
+        mydir = os.path.dirname(os.path.realpath(__file__))
+        subdir = 'Maps'
+        mapfilepath = os.path.join(mydir, subdir, mapFile)
+        tmxdata = TiledMap(mapfilepath)
+        self.__mapW = int(tmxdata.properties['Width'])
+        self.__mapH = int(tmxdata.properties['Width'])
         self.__maxCreatureNo = len(self.livingCreatures())+ len(self.deadCreatures())
         self.__diffDeadCreatures = {}
         self.__resources = self.resources_add(propWithRes=0.4, mapFile=mapFile)
@@ -272,10 +277,10 @@ def speedReprThresh(creature):
     return creature[7], creature[5]
 
 def DisplaySim(worldHistory, resourcesGRMaxE):
-    #tg = TestGraphics()
+    tg = TestGraphics()
     t0 = time.time()
-    #tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
-    #pygame.quit()
+    tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
+    pygame.quit()
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
