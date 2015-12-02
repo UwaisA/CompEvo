@@ -273,6 +273,7 @@ def avgVis(step, worldHistory):
 def speedVis(creature):
     return creature[7], creature[9]
 
+<<<<<<< HEAD
 def speedReprThresh(creature):
     return creature[7], creature[5]
 
@@ -281,21 +282,30 @@ def DisplaySim(worldHistory, resourcesGRMaxE):
     t0 = time.time()
     tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
     pygame.quit()
+=======
+def speedReprThreshVis(creature):
+    return creature[7], creature[5], creature[9]
+
+def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True):
+    if displayVisualSim:
+        tg = TestGraphics()
+        tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
+        pygame.quit()
+>>>>>>> origin/master
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
     #Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
     #Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[974][0], 232, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 975th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[959][0], 231, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 960th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[945][0], 234, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 944th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[931][0], 235, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 930th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[899][0], 233, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 898th step')
-    Analyse.plotForCreatures(speedReprThresh, worldHistory[915][0], 236, 'Speed', 'Repr Thresh', 'Speed vs Repr Thresh in 914th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[974][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 975th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[959][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 960th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[945][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 944th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[931][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 930th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[899][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 898th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[915][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 914th step')
     plt.show()
-    print time.time() - t0
 
-def DisplaySavedSim():
+def DisplaySavedSim(displayVisualSim=True):
     filenames = []
     mydir = os.path.dirname(os.path.realpath(__file__))
     subdir = 'Simulations/'
@@ -321,7 +331,7 @@ def DisplaySavedSim():
         resourcesGRMaxE = data[1]
         natVar = data[2]
         
-    DisplaySim(worldHistory, resourcesGRMaxE)
+    DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim)
 
 def dump(obj, nested_level=0, output=sys.stdout):
     spacing = '   '
@@ -348,6 +358,6 @@ def dump(obj, nested_level=0, output=sys.stdout):
 def quickCopy(d):
     return pickle.loads(pickle.dumps(d, -1))
 
-def test_Res(steps=300):
+def test_Res(steps=300, displayVisualSim=True):
     RunSim(steps)
-    DisplaySavedSim()
+    DisplaySavedSim(displayVisualSim)
