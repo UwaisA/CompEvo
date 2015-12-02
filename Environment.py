@@ -273,16 +273,6 @@ def avgVis(step, worldHistory):
 def speedVis(creature):
     return creature[7], creature[9]
 
-<<<<<<< HEAD
-def speedReprThresh(creature):
-    return creature[7], creature[5]
-
-def DisplaySim(worldHistory, resourcesGRMaxE):
-    tg = TestGraphics()
-    t0 = time.time()
-    tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
-    pygame.quit()
-=======
 def speedReprThreshVis(creature):
     return creature[7], creature[5], creature[9]
 
@@ -291,7 +281,6 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True):
         tg = TestGraphics()
         tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
         pygame.quit()
->>>>>>> origin/master
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
