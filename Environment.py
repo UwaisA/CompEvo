@@ -77,6 +77,10 @@ class Environment(object):
     def livingCreatures_add(self, creature):
         self.__livingCreatures[creature.creatureNo()] = creature
         self.__maxCreatureNo = max(creature.creatureNo(), self.maxCreatureNo())
+    
+    def livingCreatures_set(self, newLivingCreatures):
+        assert isinstance(newLivingCreatures, dict), 'newLivingCreatures is not a dict'
+        self.__livingCreatures = newLivingCreatures
         
     def deadCreatures(self):
         return self.__deadCreatures
@@ -202,6 +206,11 @@ def RunSim(noSteps=500, saveData=True):
         if len(world.livingCreatures()) == 0:
             break
         else:
+            if step == 400:
+                creatures = len(world.livingCreatures())
+                print world.livingCreatures()
+                print world.livingCreatures().items()[int(creatures*0.9):]
+                world.livingCreatures_set(dict(world.livingCreatures().items()[int(creatures*0.9):]))
             world.clearTempDeadCreatures()
             world.step()
             t2 = time.time()
@@ -286,12 +295,12 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True):
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
     #Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
     #Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[974][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 975th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[959][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 960th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[945][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 944th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[931][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 930th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[899][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 898th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[915][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 914th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[385][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 386th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[395][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 396th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[405][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 406th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[415][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 416th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[425][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 426th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[435][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 436th step')
     plt.show()
 
 def DisplaySavedSim(displayVisualSim=True):
