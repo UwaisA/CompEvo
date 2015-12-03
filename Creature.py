@@ -31,7 +31,7 @@ class Creature(object):
                       'Speed': Speed, 'MouthSize': MouthSize, 'Vis': Vis}
         self.__physChar = {'energy': E}
         self.__pos = pos
-        mapFile = "isometric_grass_and_water2.tmx" #This is the filename of the map to be used for the display of this simulation
+        mapFile = "Outdoors1.tmx" #This is the filename of the map to be used for the display of this simulation
         mydir = os.path.dirname(os.path.realpath(__file__))
         subdir = 'Maps'
         mapfilepath = os.path.join(mydir, subdir, mapFile)
