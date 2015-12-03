@@ -21,12 +21,12 @@ class Environment(object):
     ''' Creature Object to be tested in virtual environment '''
     
     # Initialises Environment
-    def __init__(self, x=0., y=0., N_o=0., T_r=0., Agg=0., E=0., natVar=0.3, mapFile = "isometric_grass_and_water2.tmx"):
+    def __init__(self, x=0., y=0., N_o=0., T_r=0., Agg=0., E=0., natVar=0.3, mapFile = "Outdoors1.tmx"):
         self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,200])),
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([300,700])),
                                   3: Creature(creatureNo=3, environment=self, pos=np.array([600,220]))}
         self.__deadCreatures = {}
-        mapFile = "isometric_grass_and_water2.tmx" #This is the filename of the map to be used for the display of this simulation
+        mapFile = "Outdoors1.tmx" #This is the filename of the map to be used for the display of this simulation
         mydir = os.path.dirname(os.path.realpath(__file__))
         subdir = 'Maps'
         mapfilepath = os.path.join(mydir, subdir, mapFile)
@@ -97,7 +97,7 @@ class Environment(object):
     def natVar(self):
         return self.__natVar
 
-    def resources_add(self, propWithRes=0.5, maxE = 20., mapFile = 'isometric_grass_and_water2.tmx'):
+    def resources_add(self, propWithRes=0.5, maxE = 20., mapFile = 'Outdoors1.tmx'):
         resources = np.zeros((3, self.__mapW, self.__mapH))
         #0 = energy, 1 = grow rate, 2 = max energy
         resources[0] = np.random.randint(5, 21, size=(self.__mapW, self.__mapH))
@@ -109,7 +109,7 @@ class Environment(object):
             mapfilepath = os.path.join(mydir, subdir, mapFile)
             tmxdata = TiledMap(mapfilepath)
             resKiller = np.ones((self.__mapW, self.__mapH))
-            noRes = {8:0,9:0,10:0,11:0,22:0,23:0}
+            noRes = {8:0,9:0,10:0,11:0,22:0,23:0,28:2,29:2,30:2,31:2,32:2,33:2,33:2,34:2,35:2,36:2,37:2,38:2}
             for y in xrange(self.__mapH):
                 for x in xrange(self.__mapW):
                     resKiller[x][y] = noRes.get(int(tmxdata.get_tile_properties(x,y,0)['tID']), 1)
