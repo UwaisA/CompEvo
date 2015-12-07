@@ -21,22 +21,21 @@ class Environment(object):
     ''' Creature Object to be tested in virtual environment '''
     
     # Initialises Environment
-
     def __init__(self, natVar=0.3, mapFile = "Outdoors2.tmx"):
         self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,2900])),
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([1600,1700])),
                                   3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420]))}
         self.__deadCreatures = {}
-        mapFile = "Outdoors1.tmx" #This is the filename of the map to be used for the display of this simulation
+        self.mapFile = mapFile #This is the filename of the map to be used for the display of this simulation
         mydir = os.path.dirname(os.path.realpath(__file__))
         subdir = 'Maps'
-        mapfilepath = os.path.join(mydir, subdir, mapFile)
+        mapfilepath = os.path.join(mydir, subdir, self.mapFile)
         tmxdata = TiledMap(mapfilepath)
         self.__mapW = int(tmxdata.properties['Width'])
         self.__mapH = int(tmxdata.properties['Width'])
         self.__maxCreatureNo = len(self.livingCreatures())+ len(self.deadCreatures())
         self.__diffDeadCreatures = {}
-        self.__resources = self.resources_add(propWithRes=0.4, mapFile=mapFile)
+        self.__resources = self.resources_add(propWithRes=0.4)
         # self.__resources = {'[5 6]': Food(self, E=10., pos=np.array([5,6]), growRate=1.),
         #                   '[ 9 21]': Food(self, E=15., pos=np.array([9,21]), growRate=1.3),
         #                   '[ 9 22]': Food(self, E=9., pos=np.array([9,22]), growRate=1.7),
@@ -102,16 +101,19 @@ class Environment(object):
     def natVar(self):
         return self.__natVar
 
-    def resources_add(self, propWithRes=0.5, maxE = 20., mapFile = 'Outdoors1.tmx'):
+    def mapFileDump(self):
+        return self.mapFile
+
+    def resources_add(self, propWithRes=0.5, maxE = 20.):
         resources = np.zeros((3, self.__mapW, self.__mapH))
         #0 = energy, 1 = grow rate, 2 = max energy
         resources[0] = np.random.randint(5, 21, size=(self.__mapW, self.__mapH))
         resources[1] = np.random.rand(self.__mapW, self.__mapH)*2.
         resources[2] = np.zeros((self.__mapW, self.__mapH)) + maxE
-        if mapFile is not None:
+        if self.mapFile is not None:
             mydir = os.path.dirname(os.path.realpath(__file__))
             subdir = 'Maps'
-            mapfilepath = os.path.join(mydir, subdir, mapFile)
+            mapfilepath = os.path.join(mydir, subdir, self.mapFile)
             tmxdata = TiledMap(mapfilepath)
             resKiller = np.ones((self.__mapW, self.__mapH))
             noRes = {8:0,9:0,10:0,11:0,22:0,23:0,28:2,29:2,30:2,31:2,32:2,33:2,33:2,34:2,35:2,36:2,37:2,38:2}
@@ -138,7 +140,8 @@ class Environment(object):
         
 
 # ACTUAL TEST_________________________________________________________________
-def LiveTesting():
+def LiveTesting(mapFile = None):
+    
     t0 = time.time()
     if mapFile is not None:
         world = Environment(mapFile=mapFile)
@@ -173,7 +176,7 @@ def LiveTesting():
     print time.time() - t0
     sys.exit()
 
-def LiveTestingNoConfirm():
+def LiveTestingNoConfirm(mapFile = None):
     t0 = time.time()
     if mapFile is not None:
         world = Environment(mapFile=mapFile)
@@ -195,7 +198,7 @@ def LiveTestingNoConfirm():
     print time.time() - t0
     sys.exit()
 
-def RunSim(noSteps=500, saveData=True):
+def RunSim(noSteps=500, saveData=True, mapFile = None):
     '''Produces nested output list with format:
     [[time0], [time1], [time2],..., [timeEnd]]
     Where each [time] is [livingCreatures, deadCreatures, resources]
@@ -204,7 +207,10 @@ def RunSim(noSteps=500, saveData=True):
     And livingCreatures, deadCreatures and resources are the {dicts} from Environment object
     '''
     t0 = time.time()
-    world = Environment()
+    if mapFile is not None:
+        world = Environment(mapFile=mapFile)
+    else:
+        world = Environment()
     resourcesGRMaxE = quickCopy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
     deadCreatures_info = deadCreatures_infoFunc({})
@@ -242,7 +248,7 @@ def RunSim(noSteps=500, saveData=True):
             os.mkdir(sim_dir)
         with open(sim_dir+'sim_%s_%s.dat'%(str(int(time.time())), str(noSteps)), 'wb') as out:
             pickler = pickle.Pickler(out, -1)
-            pickler.dump([worldHistory, resourcesGRMaxE, quickCopy(world.natVar())])
+            pickler.dump([worldHistory, resourcesGRMaxE, quickCopy(world.natVar()), world.mapFileDump()])
     return worldHistory
 
 def livingCreatures_infoFunc(livingCreatures):
@@ -294,7 +300,7 @@ def speedVis(creature):
 def speedReprThreshVis(creature):
     return creature[7], creature[5], creature[9]
 
-def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True):
+def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=None):
     if displayVisualSim:
         if mapFile is not None:
             g = Graphics(mapFile=mapFile)
@@ -303,7 +309,6 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True):
         g.DisplaySavedMap(worldHistory, resourcesGRMaxE)
         # pygame.quit()
         print 'Simulation Complete.....Analysing Data'
-
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
@@ -342,8 +347,12 @@ def DisplaySavedSim(displayVisualSim=True):
         worldHistory = data[0]
         resourcesGRMaxE = data[1]
         natVar = data[2]
+        if len(data) == 4:
+            mapFile = data[3]
+        else:
+            mapFile = None
         
-    DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim)
+    DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim, mapFile)
 
 def dump(obj, nested_level=0, output=sys.stdout):
     spacing = '   '

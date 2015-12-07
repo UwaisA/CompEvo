@@ -80,11 +80,15 @@ def findSpecies(livingCreatures):
     nearestCreatArr = nsmall(genDist, 1, 0)
     specieRad = nsmall(nearestCreatArr, int(0.99*len(nearestCreatArr)+0.5)-1, 0)
     sameSpecies = genDist<=specieRad
+    rowNo = 1
     for row in sameSpecies:
         connectedList = np.argwhere(row).flatten()
         for i in connectedList:
             for j in connectedList:
                 sameSpecies[i][j] = True
+        if rowNo%20 == 0:
+            print 'Analysing....'
+        rowNo += 1
     creatSpec = np.zeros((len(livingCreatures), 2), dtype=int)
     creatSpec[:,0] = np.arange(len(livingCreatures))
     creatSpec[:,1] = 0
