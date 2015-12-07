@@ -21,17 +21,11 @@ class Environment(object):
     ''' Creature Object to be tested in virtual environment '''
     
     # Initialises Environment
-<<<<<<< HEAD
+
     def __init__(self, natVar=0.3, mapFile = "Outdoors2.tmx"):
         self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,2900])),
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([1600,1700])),
                                   3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420]))}
-=======
-    def __init__(self, x=0., y=0., N_o=0., T_r=0., Agg=0., E=0., natVar=0.3, mapFile = "Outdoors1.tmx"):
-        self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,200])),
-                                  2: Creature(creatureNo=2, environment=self, pos=np.array([300,700])),
-                                  3: Creature(creatureNo=3, environment=self, pos=np.array([600,220]))}
->>>>>>> parent of 9675481... Faster rendering and map from sim save file and long big map sim
         self.__deadCreatures = {}
         mapFile = "Outdoors1.tmx" #This is the filename of the map to be used for the display of this simulation
         mydir = os.path.dirname(os.path.realpath(__file__))
@@ -145,9 +139,7 @@ class Environment(object):
 
 # ACTUAL TEST_________________________________________________________________
 def LiveTesting():
-    tg = TestGraphics()
     t0 = time.time()
-<<<<<<< HEAD
     if mapFile is not None:
         world = Environment(mapFile=mapFile)
         g = Graphics(mapFile=mapFile)
@@ -155,10 +147,6 @@ def LiveTesting():
         world = Environment()
         g = Graphics()
     g.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
-=======
-    world = Environment()
-    tg.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
->>>>>>> parent of 9675481... Faster rendering and map from sim save file and long big map sim
 
     step = 0
     while True:
@@ -186,9 +174,7 @@ def LiveTesting():
     sys.exit()
 
 def LiveTestingNoConfirm():
-    tg = TestGraphics()
     t0 = time.time()
-<<<<<<< HEAD
     if mapFile is not None:
         world = Environment(mapFile=mapFile)
         g = Graphics(mapFile=mapFile)
@@ -196,10 +182,6 @@ def LiveTestingNoConfirm():
         world = Environment()
         g = Graphics()
     g.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
-=======
-    world = Environment()
-    tg.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
->>>>>>> parent of 9675481... Faster rendering and map from sim save file and long big map sim
 
     step = 0
     while True:
@@ -314,7 +296,6 @@ def speedReprThreshVis(creature):
 
 def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True):
     if displayVisualSim:
-<<<<<<< HEAD
         if mapFile is not None:
             g = Graphics(mapFile=mapFile)
         else:
@@ -322,11 +303,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True):
         g.DisplaySavedMap(worldHistory, resourcesGRMaxE)
         # pygame.quit()
         print 'Simulation Complete.....Analysing Data'
-=======
-        tg = TestGraphics()
-        tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
-        pygame.quit()
->>>>>>> parent of 9675481... Faster rendering and map from sim save file and long big map sim
+
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
