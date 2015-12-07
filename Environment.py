@@ -3,7 +3,7 @@ import pygame
 import sys
 from Creature import Creature
 import time
-from Test_Graphics_2 import TestGraphics
+from Graphics import Graphics
 import Analyse
 import matplotlib.pyplot as plt
 import cPickle as pickle
@@ -21,10 +21,17 @@ class Environment(object):
     ''' Creature Object to be tested in virtual environment '''
     
     # Initialises Environment
+<<<<<<< HEAD
+    def __init__(self, natVar=0.3, mapFile = "Outdoors2.tmx"):
+        self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,2900])),
+                                  2: Creature(creatureNo=2, environment=self, pos=np.array([1600,1700])),
+                                  3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420]))}
+=======
     def __init__(self, x=0., y=0., N_o=0., T_r=0., Agg=0., E=0., natVar=0.3, mapFile = "Outdoors1.tmx"):
         self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,200])),
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([300,700])),
                                   3: Creature(creatureNo=3, environment=self, pos=np.array([600,220]))}
+>>>>>>> parent of 9675481... Faster rendering and map from sim save file and long big map sim
         self.__deadCreatures = {}
         mapFile = "Outdoors1.tmx" #This is the filename of the map to be used for the display of this simulation
         mydir = os.path.dirname(os.path.realpath(__file__))
@@ -77,6 +84,10 @@ class Environment(object):
     def livingCreatures_add(self, creature):
         self.__livingCreatures[creature.creatureNo()] = creature
         self.__maxCreatureNo = max(creature.creatureNo(), self.maxCreatureNo())
+    
+    def livingCreatures_set(self, newLivingCreatures):
+        assert isinstance(newLivingCreatures, dict), 'newLivingCreatures is not a dict'
+        self.__livingCreatures = newLivingCreatures
         
     def deadCreatures(self):
         return self.__deadCreatures
@@ -119,7 +130,7 @@ class Environment(object):
             resKiller[resKiller > propWithRes] = 1
             resKiller[resKiller <= propWithRes] = 0
             resKiller = 1 - resKiller
-        resources *= resKiller
+        resources *= resKiller*0.85
         return resources
     
     def resources_grow(self):
@@ -136,8 +147,18 @@ class Environment(object):
 def LiveTesting():
     tg = TestGraphics()
     t0 = time.time()
+<<<<<<< HEAD
+    if mapFile is not None:
+        world = Environment(mapFile=mapFile)
+        g = Graphics(mapFile=mapFile)
+    else:
+        world = Environment()
+        g = Graphics()
+    g.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
+=======
     world = Environment()
     tg.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
+>>>>>>> parent of 9675481... Faster rendering and map from sim save file and long big map sim
 
     step = 0
     while True:
@@ -157,7 +178,7 @@ def LiveTesting():
                 world.step()
                 step += 1
                 print 'Environment stepped forward...updating map. step no: %d' % step
-                tg.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
+                g.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
                 # time.sleep(0.2)
 
     pygame.quit()
@@ -167,8 +188,18 @@ def LiveTesting():
 def LiveTestingNoConfirm():
     tg = TestGraphics()
     t0 = time.time()
+<<<<<<< HEAD
+    if mapFile is not None:
+        world = Environment(mapFile=mapFile)
+        g = Graphics(mapFile=mapFile)
+    else:
+        world = Environment()
+        g = Graphics()
+    g.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
+=======
     world = Environment()
     tg.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
+>>>>>>> parent of 9675481... Faster rendering and map from sim save file and long big map sim
 
     step = 0
     while True:
@@ -176,7 +207,7 @@ def LiveTestingNoConfirm():
         world.step()
         step += 1
         print 'Environment stepped forward...updating map. step no: %d, time taken: %s' % (step, str(time.time() - t1))
-        tg.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
+        g.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
 
     pygame.quit()
     print time.time() - t0
@@ -202,6 +233,11 @@ def RunSim(noSteps=500, saveData=True):
         if len(world.livingCreatures()) == 0:
             break
         else:
+            if step == 400:
+                creatures = len(world.livingCreatures())
+                print world.livingCreatures()
+                print world.livingCreatures().items()[int(creatures*0.9):]
+                world.livingCreatures_set(dict(world.livingCreatures().items()[int(creatures*0.9):]))
             world.clearTempDeadCreatures()
             world.step()
             t2 = time.time()
@@ -278,20 +314,30 @@ def speedReprThreshVis(creature):
 
 def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True):
     if displayVisualSim:
+<<<<<<< HEAD
+        if mapFile is not None:
+            g = Graphics(mapFile=mapFile)
+        else:
+            g = Graphics()
+        g.DisplaySavedMap(worldHistory, resourcesGRMaxE)
+        # pygame.quit()
+        print 'Simulation Complete.....Analysing Data'
+=======
         tg = TestGraphics()
         tg.DisplaySavedMap(worldHistory, resourcesGRMaxE)
         pygame.quit()
+>>>>>>> parent of 9675481... Faster rendering and map from sim save file and long big map sim
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
     #Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
     #Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[974][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 975th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[959][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 960th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[945][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 944th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[931][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 930th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[899][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 898th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[915][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 914th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[385][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 386th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[395][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 396th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[405][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 406th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[415][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 416th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[425][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 426th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[435][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 436th step')
     plt.show()
 
 def DisplaySavedSim(displayVisualSim=True):

@@ -24,7 +24,8 @@ class Creature(object):
             T_r = creature.gen()['ReprThresh'] + rand[0]/100.
             Speed = abs(creature.gen()['Speed']+rand[1]/100.)
             Vis = abs(creature.gen()['Vis']+rand[2]/100.)
-            MouthSize = abs(creature.gen()['MouthSize']+rand[3]/100.)
+            # MouthSize = abs(creature.gen()['MouthSize']+rand[3]/100.)
+            MouthSize = abs(creature.gen()['MouthSize']-(abs(rand[3])/100.)*np.sign(rand[1]))
             E = (int)(creature.physChar()['energy']/creature.gen()['NumOff'])
         
         self.__gen = {'NumOff': N_o, 'ReprThresh': T_r, 'Aggr': Agg,
@@ -128,7 +129,7 @@ class Creature(object):
     
     def costOfLiv(self):
         aggrFactor = self.gen()['Aggr']/2.
-        speedFactor = self.gen()['Speed']/5.
+        speedFactor = self.gen()['Speed']/4.
         visionFactor = self.gen()['Vis']/6.
         energyFactor = self.physChar()['energy']/12.
         return aggrFactor+speedFactor+energyFactor+visionFactor
