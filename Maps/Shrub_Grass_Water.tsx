@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="Shrub_Grass_Water" tilewidth="64" tileheight="64" tilecount="40">
  <tileoffset x="0" y="15"/>
- <image source="../../../Documents/Imperial/Year 3/Project/Shrub Grass Water.png" width="512" height="320"/>
+ <image source="../../../GitHub/CompEvo/Maps/Shrub Grass Water.png" width="512" height="320"/>
  <terraintypes>
   <terrain name="Grass" tile="-1"/>
   <terrain name="Water" tile="-1"/>
