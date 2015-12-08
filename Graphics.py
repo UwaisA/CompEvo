@@ -126,6 +126,7 @@ class Graphics(object):
                 if event.type == pygame.QUIT:
                     done = True
                     pygame.quit()
+                    return
 
             t0 = time.time()
             self.screen.fill(self.WHITE)

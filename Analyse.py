@@ -2,6 +2,7 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import time
+from itertools import combinations as combs
 
 '''
 func must take in step then *funcargs as params
@@ -68,38 +69,38 @@ def plotForCreatures(func, livingCreatures, subplot, xlabel='x', ylabel='y', zla
 livingCreatures should be formatted as a numpy array as it is stored in worldHist
 '''
 def findSpecies(livingCreatures):
-    genDist = np.zeros((len(livingCreatures), len(livingCreatures)))
-    it = np.nditer(genDist, flags=['multi_index'], op_flags=['writeonly'])
+    t0 = time.time()
+    genDistSqr = np.zeros((len(livingCreatures), len(livingCreatures)))
+    it = np.nditer(genDistSqr, flags=['multi_index'], op_flags=['writeonly'])
     creatureNoList = livingCreatures[:,0]
     while not it.finished:
         if (it.multi_index[1] - it.multi_index[0]) > 0:
-            it[0] = genDistCalc(livingCreatures[it.multi_index[0]][4:],
+            it[0] = genDistSqrCalc(livingCreatures[it.multi_index[0]][4:],
                                 livingCreatures[it.multi_index[1]][4:])
         it.iternext()
-    genDist += genDist.T
-    nearestCreatArr = nsmall(genDist, 1, 0)
+    t1 = time.time()
+    genDistSqr += genDistSqr.T
+    nearestCreatArr = nsmall(genDistSqr, 1, 0)
     specieRad = nsmall(nearestCreatArr, int(0.99*len(nearestCreatArr)+0.5)-1, 0)
-    sameSpecies = genDist<=specieRad
-    rowNo = 1
+    sameSpecies = genDistSqr<=specieRad
+    t2 = time.time()
+    #merges clusters
     for row in sameSpecies:
         connectedList = np.argwhere(row).flatten()
-        for i in connectedList:
-            for j in connectedList:
-                sameSpecies[i][j] = True
-        if rowNo%20 == 0:
-            print 'Analysing....'
-        rowNo += 1
+        for (i,j) in combs(connectedList, 2):
+            sameSpecies[i][j] = sameSpecies[j][i] = True
+    t3 = time.time()
     creatSpec = np.zeros((len(livingCreatures), 2), dtype=int)
-    creatSpec[:,0] = np.arange(len(livingCreatures))
+    creatSpec[:,0] = creatureNoList
     creatSpec[:,1] = 0
     while np.min(creatSpec[:,1]) == 0:
         curSpec = np.max(creatSpec[:,1])+1
         creatSpec[:,1] += curSpec*sameSpecies[np.argmin(creatSpec[:,1])]
-    creatSpec[:,0] = creatureNoList
+    #print 'total',time.time()-t0,'while1',t1-t0,'tripleFor',t3-t2
     return creatSpec
 
-def genDistCalc(gen1, gen2):
-    return (sum((gen1-gen2)**2))**0.5
+def genDistSqrCalc(gen1, gen2):
+    return np.sum((gen1-gen2)**2)
 
 def nsmall(arr, n, axis):
     return np.partition(arr, n, axis)[n]
