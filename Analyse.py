@@ -79,24 +79,35 @@ def findSpecies(livingCreatures):
                                 livingCreatures[it.multi_index[1]][4:])
         it.iternext()
     t1 = time.time()
+    genDistSqr = np.triu(genDistSqr, 1)
     genDistSqr += genDistSqr.T
     nearestCreatArr = nsmall(genDistSqr, 1, 0)
     specieRad = nsmall(nearestCreatArr, int(0.99*len(nearestCreatArr)+0.5)-1, 0)
     sameSpecies = genDistSqr<=specieRad
     t2 = time.time()
     #merges clusters
-    for row in sameSpecies:
-        connectedList = np.argwhere(row).flatten()
-        for (i,j) in combs(connectedList, 2):
-            sameSpecies[i][j] = sameSpecies[j][i] = True
-    t3 = time.time()
-    creatSpec = np.zeros((len(livingCreatures), 2), dtype=int)
+    #for row in sameSpecies:
+    #    connectedList = np.argwhere(row).flatten()
+    #    for (i,j) in combs(connectedList, 2):
+    #        sameSpecies[i][j] = sameSpecies[j][i] = True
+    #t3 = time.time()
+    creatSpec = np.ndarray((len(livingCreatures), 2), dtype=int)
     creatSpec[:,0] = creatureNoList
     creatSpec[:,1] = 0
-    while np.min(creatSpec[:,1]) == 0:
-        curSpec = np.max(creatSpec[:,1])+1
-        creatSpec[:,1] += curSpec*sameSpecies[np.argmin(creatSpec[:,1])]
-    #print 'total',time.time()-t0,'while1',t1-t0,'tripleFor',t3-t2
+    argsToBeAnalysed = set(np.arange(len(livingCreatures))) #creature args yet to merged
+    curSpec = 0
+    while len(argsToBeAnalysed) > 0: #one iteration for each species
+        curSpec += 1
+        newToBeAnalysed = set([argsToBeAnalysed.pop()])
+        while len(newToBeAnalysed) > 0:
+            for nextVal in newToBeAnalysed: #just for getting a value from set
+                toBeAnalysedNext = argsToBeAnalysed.intersection(set(np.argwhere(sameSpecies[nextVal]).flatten()))
+                argsToBeAnalysed = argsToBeAnalysed.difference(toBeAnalysedNext)
+                newToBeAnalysed = newToBeAnalysed.union(toBeAnalysedNext)
+                creatSpec[nextVal][1] = curSpec
+                newToBeAnalysed.remove(nextVal)
+                break
+    print 'total',time.time()-t0,'newTripleFor',time.time()-t2,'len liv creat',len(livingCreatures)
     return creatSpec
 
 def genDistSqrCalc(gen1, gen2):
