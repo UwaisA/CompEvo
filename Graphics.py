@@ -15,7 +15,7 @@ class Graphics(object):
     # tw = 64 # Tile width can get from tmx
     # th = 32 # Tile height """"""""
     
-    def __init__(self, mapFile = "isometric_grass_and_water2.tmx"):
+    def __init__(self, mapFile = "Outdoors1.tmx"):
         pygame.init()
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         self.clock = pygame.time.Clock()
