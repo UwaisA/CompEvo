@@ -23,11 +23,11 @@ class Graphics(object):
         mydir = os.path.dirname(os.path.realpath(__file__))
         subdir = 'Maps'
         mapfilepath = os.path.join(mydir, subdir, self.mapFile)
-        tmxdata = TiledMap(mapfilepath)
-        self.tw = int(tmxdata.get_tile_properties(0,0,0)['width'])
-        self.th = int(tmxdata.get_tile_properties(0,0,0)['height']/2.)
-        self.gridWidth = int(tmxdata.properties['Width'])
-        self.gridHeight = int(tmxdata.properties['Width'])
+        self.tmxdata = TiledMap(mapfilepath)
+        self.tw = int(self.tmxdata.get_tile_properties(0,0,0)['width'])
+        self.th = int(self.tmxdata.get_tile_properties(0,0,0)['height']/2.)
+        self.gridWidth = int(self.tmxdata.properties['Width'])
+        self.gridHeight = int(self.tmxdata.properties['Width'])
         self.SIZE = [self.gridWidth*self.tw, self.gridHeight*self.th]
         self.RESIZE = [1600,800]
         self.screen = pygame.display.set_mode(self.RESIZE, HWSURFACE|DOUBLEBUF|RESIZABLE)
@@ -72,8 +72,8 @@ class Graphics(object):
         
         for creature in livingCreatures.values():
             trans_pos = self.TransformPos(np.array([creature.pos()[0], creature.pos()[1]]))
-            colour = np.clip([int(255*(creature.physChar()['energy']/creature.gen()['ReprThresh'])),
-                    int(255*(creature.physChar()['energy']/creature.gen()['ReprThresh'])), 255], 0, 255)
+            eOverRT = creature.physChar()['energy']/creature.gen()['ReprThresh']
+            colour = np.clip([int(255*eOverRT),int(255*eOverRT),255], 0, 255)
             pygame.draw.circle(self.screen, colour, (trans_pos[0], trans_pos[1]), 2)
         
         print 'Map Updated'
@@ -85,13 +85,15 @@ class Graphics(object):
         # subdir = 'Maps'
         # mapfilepath = os.path.join(mydir, subdir, mapFile)
         # gameMap = load_pygame(mapfilepath)
-        # tmxdata = TiledMap(mapfilepath)
+        # self.tmxdata = TiledMap(mapfilepath)
         
         timeLength = len(worldHistory)
-        TransPosArray = np.zeros([self.gridWidth, self.gridHeight, 2])
-        PolygonPosArray = np.zeros([self.gridWidth, self.gridHeight, 4, 2])
-        PolygonColourArray = np.zeros([self.gridWidth, self.gridHeight, timeLength, 3])
+        TransPosArray = np.zeros((self.gridWidth, self.gridHeight, 2))
+        PolygonPosArray = np.zeros((self.gridWidth, self.gridHeight, 4, 2))
+        PolygonColourArray = np.zeros((self.gridWidth, self.gridHeight, timeLength, 3))
         TileBlitSize = (int(self.tw*(self.RESIZE[0]/float(self.SIZE[0]))), int(self.tw*(self.RESIZE[1]/float(self.SIZE[1]))))
+        tIDsArray = np.ndarray((self.gridWidth, self.gridHeight), dtype=int)
+        images = {}
         for b in xrange(self.gridHeight):
             for a in xrange(self.gridWidth):
                 x, y = self.gridWidth-a-1, self.gridHeight-b-1
@@ -101,6 +103,10 @@ class Graphics(object):
                     PolygonPosArray[x][y] = [(tempTransPos[0], tempTransPos[1]+int((self.th/16.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0]+int((self.tw*7./16.)*(self.RESIZE[0]/float(self.SIZE[0]))), tempTransPos[1]+int((self.th/2.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0], tempTransPos[1]+int((self.th*15./16.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0]-int((self.tw*7./16.)*(self.RESIZE[0]/float(self.SIZE[0]))), tempTransPos[1]+int((self.tw/4.)*(self.RESIZE[1]/float(self.SIZE[1]))))]
                     for timeStep in xrange(timeLength):
                         PolygonColourArray[x][y][timeStep] = [self.RED[0]*worldHistory[timeStep][2][x][y]/float(resourcesGRMaxE[1][x][y]), self.RED[1], self.RED[2]]
+                tID = int(self.tmxdata.get_tile_properties(x,y,0)['tID'])
+                tIDsArray[x][y] = tID
+                if not images.has_key(tID):
+                    images[tID] = pygame.transform.scale(self.gameMap.get_tile_image(x,y,0), TileBlitSize)
             print 'Loading map surface locations, approximately %d%% complete' % int(b*(100./self.gridHeight))
 
         creatPropertyArray = [None]*timeLength
@@ -111,7 +117,8 @@ class Graphics(object):
             for i in xrange(len(creatures)):
                 tempCreatTransPos = self.TransformPos(np.array([int(creatures[i][1]), int(creatures[i][2])]))
                 tempCreatPropertyArray[i][0] = np.array([tempCreatTransPos[0], tempCreatTransPos[1], 0])
-                tempCreatPropertyArray[i][1] = np.clip([int(255*(creatures[i][3]/creatures[i][5])), int(255*(creatures[i][3]/creatures[i][5])), 255], 0, 255)
+                col = int(255*(creatures[i][3]/creatures[i][5]))
+                tempCreatPropertyArray[i][1] = np.clip([col, col, 255], 0, 255)
             creatPropertyArray[creatArrStep] = tempCreatPropertyArray.astype(int)
             if creatArrStep*100/timeLength >= lastRatio+1:
                 print 'Loading creature locations, approximately %d%% complete' % int(creatArrStep*(100./timeLength))
@@ -135,9 +142,12 @@ class Graphics(object):
                 # t0a = time.time()
                 x, y = self.gridWidth-a-1, self.gridHeight-b-1
                 # t0ai = time.time()
-                image = self.gameMap.get_tile_image(x,y,0)
+                try:
+                    image = images[tIDsArray[x][y]] #pre-scaled at load time
+                except IndexError:
+                    print x,y
                 # t0aii = time.time()
-                self.screen.blit(pygame.transform.scale(image, TileBlitSize),(TransPosArray[x][y][0], TransPosArray[x][y][1]))
+                self.screen.blit(image, (TransPosArray[x][y][0], TransPosArray[x][y][1]))
                 # t1a = time.time()
                 if resourcesGRMaxE[0][x][y] > 0:
                     # t1ai = time.time()

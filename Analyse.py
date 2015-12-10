@@ -85,15 +85,10 @@ def findSpecies(livingCreatures):
     specieRad = nsmall(nearestCreatArr, int(0.99*len(nearestCreatArr)+0.5)-1, 0)
     sameSpecies = genDistSqr<=specieRad
     t2 = time.time()
-    #merges clusters
-    #for row in sameSpecies:
-    #    connectedList = np.argwhere(row).flatten()
-    #    for (i,j) in combs(connectedList, 2):
-    #        sameSpecies[i][j] = sameSpecies[j][i] = True
-    #t3 = time.time()
     creatSpec = np.ndarray((len(livingCreatures), 2), dtype=int)
     creatSpec[:,0] = creatureNoList
     creatSpec[:,1] = 0
+    #merges clusters
     argsToBeAnalysed = set(np.arange(len(livingCreatures))) #creature args yet to merged
     curSpec = 0
     while len(argsToBeAnalysed) > 0: #one iteration for each species

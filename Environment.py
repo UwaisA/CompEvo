@@ -309,17 +309,21 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
         g.DisplaySavedMap(worldHistory, resourcesGRMaxE)
         # pygame.quit()
         print 'Simulation Complete.....Analysing Data'
+    popForStep = np.ndarray(len(worldHistory))
+    for step in xrange(len(worldHistory)):
+        popForStep[step] = totPop(step, worldHistory)
+    POI = np.argmax(popForStep)
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
     #Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
     #Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[385][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 386th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[395][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 396th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[405][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 406th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[415][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 416th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[425][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 426th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[435][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in 436th step')
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI-10][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI-9))
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI-5][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI-4))
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+1))
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+5][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+6))
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+10][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+11))
+    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+15][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+16))
     plt.show()
 
 def DisplaySavedSim(displayVisualSim=True):
