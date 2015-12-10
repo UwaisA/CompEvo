@@ -21,7 +21,7 @@ class Environment(object):
     ''' Creature Object to be tested in virtual environment '''
     
     # Initialises Environment
-    def __init__(self, natVar=0.3, mapFile = "Outdoors2.tmx"):
+    def __init__(self, natVar=0.3, mapFile = "isometric_grass_and_water2.tmx"):
         self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,2900])),
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([1600,1700])),
                                   3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420]))}
@@ -222,6 +222,7 @@ def RunSim(noSteps=500, saveData=True, mapFile = None):
             break
         else:
             if step == 400:
+                
                 creatures = len(world.livingCreatures())
                 print world.livingCreatures()
                 print world.livingCreatures().items()[int(creatures*0.9):]
@@ -312,7 +313,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     popForStep = np.ndarray(len(worldHistory))
     for step in xrange(len(worldHistory)):
         popForStep[step] = totPop(step, worldHistory)
-    POI = np.argmax(popForStep)
+    POI = np.clip(np.argmax(popForStep),10, len(worldHistory)-16)
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))

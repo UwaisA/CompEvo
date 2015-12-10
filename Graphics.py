@@ -142,10 +142,7 @@ class Graphics(object):
                 # t0a = time.time()
                 x, y = self.gridWidth-a-1, self.gridHeight-b-1
                 # t0ai = time.time()
-                try:
-                    image = images[tIDsArray[x][y]] #pre-scaled at load time
-                except IndexError:
-                    print x,y
+                image = images[tIDsArray[x][y]] #pre-scaled at load time
                 # t0aii = time.time()
                 self.screen.blit(image, (TransPosArray[x][y][0], TransPosArray[x][y][1]))
                 # t1a = time.time()

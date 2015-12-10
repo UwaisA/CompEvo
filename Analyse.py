@@ -3,6 +3,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import time
 from itertools import combinations as combs
+import functools
 
 '''
 func must take in step then *funcargs as params
@@ -70,14 +71,13 @@ livingCreatures should be formatted as a numpy array as it is stored in worldHis
 '''
 def findSpecies(livingCreatures):
     t0 = time.time()
-    genDistSqr = np.zeros((len(livingCreatures), len(livingCreatures)))
-    it = np.nditer(genDistSqr, flags=['multi_index'], op_flags=['writeonly'])
+   # genDistSqr = np.zeros((len(livingCreatures), len(livingCreatures)))
+    #it = np.nditer(genDistSqr, flags=['multi_index'], op_flags=['writeonly'])
     creatureNoList = livingCreatures[:,0]
-    while not it.finished:
-        if (it.multi_index[1] - it.multi_index[0]) > 0:
-            it[0] = genDistSqrCalc(livingCreatures[it.multi_index[0]][4:],
-                                livingCreatures[it.multi_index[1]][4:])
-        it.iternext()
+    creatIndicies = np.arange(len(livingCreatures))
+    xCreat, yCreat = np.meshgrid(creatIndicies,creatIndicies)[0].flatten(), np.meshgrid(creatIndicies,creatIndicies)[1].flatten()
+    func = functools.partial(genList, livingCreatures)
+    genDistSqr = np.array(map(func, xCreat, yCreat)).reshape((len(livingCreatures), len(livingCreatures)))
     t1 = time.time()
     genDistSqr = np.triu(genDistSqr, 1)
     genDistSqr += genDistSqr.T
@@ -104,6 +104,11 @@ def findSpecies(livingCreatures):
                 break
     print 'total',time.time()-t0,'newTripleFor',time.time()-t2,'len liv creat',len(livingCreatures)
     return creatSpec
+
+def genList(livingCreatures, creat1, creat2):
+    if (creat1 - creat2) > 0:
+        return genDistSqrCalc(livingCreatures[creat1][4:], livingCreatures[creat2][4:])
+    return 0
 
 def genDistSqrCalc(gen1, gen2):
     return np.sum((gen1-gen2)**2)
