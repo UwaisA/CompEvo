@@ -71,16 +71,12 @@ livingCreatures should be formatted as a numpy array as it is stored in worldHis
 '''
 def findSpecies(livingCreatures):
     t0 = time.time()
-   # genDistSqr = np.zeros((len(livingCreatures), len(livingCreatures)))
-    #it = np.nditer(genDistSqr, flags=['multi_index'], op_flags=['writeonly'])
     creatureNoList = livingCreatures[:,0]
-    creatIndicies = np.arange(len(livingCreatures))
-    xCreat, yCreat = np.meshgrid(creatIndicies,creatIndicies)[0].flatten(), np.meshgrid(creatIndicies,creatIndicies)[1].flatten()
-    func = functools.partial(genList, livingCreatures)
-    genDistSqr = np.array(map(func, xCreat, yCreat)).reshape((len(livingCreatures), len(livingCreatures)))
+    creatGens = np.array([livingCreatures[:,4:]])
+    xCreat = np.repeat(creatGens, (len(creatGens[0])), axis=0)
+    yCreat = xCreat.transpose((1,0,2))
+    genDistSqr = np.sum((xCreat-yCreat)**2, axis=2)
     t1 = time.time()
-    genDistSqr = np.triu(genDistSqr, 1)
-    genDistSqr += genDistSqr.T
     nearestCreatArr = nsmall(genDistSqr, 1, 0)
     specieRad = nsmall(nearestCreatArr, int(0.99*len(nearestCreatArr)+0.5)-1, 0)
     sameSpecies = genDistSqr<=specieRad
