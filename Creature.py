@@ -24,8 +24,8 @@ class Creature(object):
             T_r = creature.gen()['ReprThresh'] + rand[0]/100.
             Speed = abs(creature.gen()['Speed']+rand[1]/100.)
             Vis = abs(creature.gen()['Vis']+rand[2]/100.)
-            # MouthSize = abs(creature.gen()['MouthSize']+rand[3]/100.)
-            MouthSize = abs(creature.gen()['MouthSize']-(abs(rand[3])/100.)*np.sign(rand[1]))
+            MouthSize = abs(creature.gen()['MouthSize']+rand[3]/100.)
+            #MouthSize = abs(creature.gen()['MouthSize']-(abs(rand[3])/100.)*np.sign(rand[1]))
             E = (int)(creature.physChar()['energy']/creature.gen()['NumOff'])
         
         self.__gen = {'NumOff': N_o, 'ReprThresh': T_r, 'Aggr': Agg,
@@ -77,10 +77,8 @@ class Creature(object):
         self.__physChar['energy'] -= self.costOfLiv()
         if self.physChar()['energy'] <= 0:
             self.die()
-            return False
         elif self.enviro().resources()[0][self.gridPos()[0]][self.gridPos()[1]] > 0:
             self.eat()
-        return True
         #resolve conflict - eat or be eaten
 
     def eat(self):
@@ -102,7 +100,7 @@ class Creature(object):
         addAtPos(lookAtDist, toLookAt, (abs(np.clip((x-goodVis), -mapW-1, 0)), abs(np.clip((y-goodVis), -mapH-1, 0))))
         maxLoc = np.argmax(lookAtDist)
         maxDir = unitVec(np.array([(int) (maxLoc/(2*goodVis+1)) - goodVis, (int) (maxLoc%(2*goodVis+1)) - goodVis]))
-        if np.all(maxDir+1) or goodVis == 0:
+        if str(maxDir)=='[0 0]' or goodVis == 0:
             newMov = ranPN(self.gen()['Speed']*3, 2)
         else:
             newMov = maxDir*((int)(self.gen()['Speed']*3))
