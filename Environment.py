@@ -72,7 +72,7 @@ class Environment(object):
         return self.__livingCreatures
 
     def livingCreatures_pop(self, creatureNo):
-        self.__livingCreatures.pop(creatureNo)
+        return self.__livingCreatures.pop(creatureNo)
 
     def livingCreatures_add(self, creature):
         self.__livingCreatures[creature.creatureNo()] = creature
@@ -138,7 +138,6 @@ class Environment(object):
         for creature in self.__livingCreatures.values():
             creature.step()
         
-
 # ACTUAL TEST_________________________________________________________________
 def LiveTesting(mapFile = None):
     
@@ -170,7 +169,6 @@ def LiveTesting(mapFile = None):
                 step += 1
                 print 'Environment stepped forward...updating map. step no: %d' % step
                 g.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
-                # time.sleep(0.2)
 
     pygame.quit()
     print time.time() - t0
@@ -211,7 +209,7 @@ def RunSim(noSteps=500, saveData=True, mapFile = None):
         world = Environment(mapFile=mapFile)
     else:
         world = Environment()
-    resourcesGRMaxE = quickCopy(world.resources()[1:3,:,:])
+    resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
     deadCreatures_info = deadCreatures_infoFunc({})
     worldHistory = [[livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0])]]
@@ -222,7 +220,6 @@ def RunSim(noSteps=500, saveData=True, mapFile = None):
             break
         else:
             if step == 400:
-                
                 creatures = len(world.livingCreatures())
                 print world.livingCreatures()
                 print world.livingCreatures().items()[int(creatures*0.9):]

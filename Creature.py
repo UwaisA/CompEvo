@@ -77,34 +77,32 @@ class Creature(object):
         self.__physChar['energy'] -= self.costOfLiv()
         if self.physChar()['energy'] <= 0:
             self.die()
+            return False
         elif self.enviro().resources()[0][self.gridPos()[0]][self.gridPos()[1]] > 0:
             self.eat()
+        return True
         #resolve conflict - eat or be eaten
-        #if(self.pos() in (i.pos() for i in self.__enviro.livingCreatures)):
 
     def eat(self):
+        x,y = self.gridPos().astype(int)
         energyIncrease = min(self.gen()['MouthSize'], #can be eaten vs E available
-            self.enviro().resources()[0][self.gridPos()[0]][self.gridPos()[1]])
+            self.enviro().resources()[0][x][y])
         self.setEnergy(self.physChar()['energy'] + energyIncrease)
-        self.enviro().resources()[0][self.gridPos()[0]][self.gridPos()[1]] -= energyIncrease
-        if(self.physChar()['energy'] > self.gen()['ReprThresh']):
+        self.enviro().resources()[0][x][y] -= energyIncrease
+        if self.physChar()['energy'] > self.gen()['ReprThresh']:
             self.reproduce()
 
     def move(self):
-        x = int(self.gridPos()[0])
-        y = int(self.gridPos()[1])
+        x,y = self.gridPos().astype(int)
         goodVis = (int) (self.gen()['Vis'])
-        mapW = self.enviro().mapDims()[0]
-        mapH = self.enviro().mapDims()[1]
+        mapW, mapH = self.enviro().mapDims()
         toLookAt = np.copy(self.enviro().resources()[0][max(x-goodVis, 0):min(x+goodVis+1, mapW),
                                                         max(y-goodVis, 0):min(y+goodVis+1, mapH)])
         lookAtDist = distFactor(2*goodVis+1)*self.pxPerTile/(self.gen()['Speed']*3)*self.costOfLiv()
         addAtPos(lookAtDist, toLookAt, (abs(np.clip((x-goodVis), -mapW-1, 0)), abs(np.clip((y-goodVis), -mapH-1, 0))))
-        #print toLookAt, self.gridPos(), goodVis
         maxLoc = np.argmax(lookAtDist)
         maxDir = unitVec(np.array([(int) (maxLoc/(2*goodVis+1)) - goodVis, (int) (maxLoc%(2*goodVis+1)) - goodVis]))
-        #newPos = ranPN(self.gen()['Speed']*3, 2)+self.pos()
-        if str(maxDir)=='[0 0]' or goodVis == 0:
+        if np.all(maxDir+1) or goodVis == 0:
             newMov = ranPN(self.gen()['Speed']*3, 2)
         else:
             newMov = maxDir*((int)(self.gen()['Speed']*3))
@@ -113,8 +111,7 @@ class Creature(object):
 
     def die(self):
         try:
-            self.enviro().deadCreatures_add(self)
-            self.enviro().livingCreatures_pop(self.__creatureNo)
+            self.enviro().deadCreatures_add(self.enviro().livingCreatures_pop(self.__creatureNo))
         except KeyError:
             print 'creature already dead'
 
@@ -124,15 +121,16 @@ class Creature(object):
         #create N_o children in living creatures
         for i in xrange(int(self.gen()['NumOff'])):
             key = self.enviro().maxCreatureNo() + 1
-            creature = Creature(key, self)
-            self.enviro().livingCreatures_add(creature)
+            self.enviro().livingCreatures_add(Creature(key, self))
     
     def costOfLiv(self):
-        aggrFactor = self.gen()['Aggr']/2.
-        speedFactor = self.gen()['Speed']/4.
-        visionFactor = self.gen()['Vis']/6.
-        energyFactor = self.physChar()['energy']/12.
-        return aggrFactor+speedFactor+energyFactor+visionFactor
+        out = 0
+        g = self.gen()
+        out += g['Aggr']/2.
+        out += g['Speed']/4.
+        out += g['Vis']/6.
+        out += self.physChar()['energy']/12.
+        return out
     
 def ranPN(posNeg, size=None):
     if size == None:
@@ -143,10 +141,8 @@ def ranPN(posNeg, size=None):
 def distFactor(size):
     assert size%2 == 1, 'size must be odd'
     out=np.zeros((size,size))-(int(size)/2)
-    counter = 1
-    while out[int(size)/2, int(size)/2]!=0:
-        addAtPos(out, np.ones((size-counter*2, size-counter*2)), (counter, counter))
-        counter += 1
+    for i in xrange(int(size)/2):
+        addAtPos(out, np.ones((size-(i+1)*2, size-(i+1)*2)), (i+1, i+1))
     return out
 
 def unitVec(arr):

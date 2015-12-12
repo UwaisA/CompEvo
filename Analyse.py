@@ -55,7 +55,10 @@ def plotForCreatures(func, livingCreatures, subplot, xlabel='x', ylabel='y', zla
     yRes = np.ndarray(len(livingCreatures))
     dims = len(func(livingCreatures[0]))
     creatSpec = findSpecies(livingCreatures)
-    colors = (np.array(creatSpec[:,1])-1)/float(np.max(creatSpec[:,1])-1)
+    if np.max(creatSpec[:,1])==0:
+        colors = np.array(creatSpec[:,1])
+    else:
+        colors = (np.array(creatSpec[:,1]))/float(np.max(creatSpec[:,1]))
     if dims == 3:
         zRes = np.ndarray(len(livingCreatures))
         for i in xrange(len(livingCreatures)):
