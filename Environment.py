@@ -21,7 +21,7 @@ class Environment(object):
     ''' Creature Object to be tested in virtual environment '''
     
     # Initialises Environment
-    def __init__(self, natVar=0.3, mapFile = "Outdoors2.tmx"):
+    def __init__(self, natVar=0.3, mapFile = "isometric_grass_and_water2.tmx"):
         self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,2900])),
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([1600,1700])),
                                   3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420]))}
@@ -72,7 +72,7 @@ class Environment(object):
         return self.__livingCreatures
 
     def livingCreatures_pop(self, creatureNo):
-        self.__livingCreatures.pop(creatureNo)
+        return self.__livingCreatures.pop(creatureNo)
 
     def livingCreatures_add(self, creature):
         self.__livingCreatures[creature.creatureNo()] = creature
@@ -138,7 +138,6 @@ class Environment(object):
         for creature in self.__livingCreatures.values():
             creature.step()
         
-
 # ACTUAL TEST_________________________________________________________________
 def LiveTesting(mapFile = None):
     
@@ -170,7 +169,6 @@ def LiveTesting(mapFile = None):
                 step += 1
                 print 'Environment stepped forward...updating map. step no: %d' % step
                 g.DisplayMap(livingCreatures = world.livingCreatures(), resources = world.resources())
-                # time.sleep(0.2)
 
     pygame.quit()
     print time.time() - t0
@@ -211,7 +209,7 @@ def RunSim(noSteps=500, saveData=True, mapFile = None):
         world = Environment(mapFile=mapFile)
     else:
         world = Environment()
-    resourcesGRMaxE = quickCopy(world.resources()[1:3,:,:])
+    resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
     deadCreatures_info = deadCreatures_infoFunc({})
     worldHistory = [[livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0])]]
@@ -312,6 +310,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     popForStep = np.ndarray(len(worldHistory))
     for step in xrange(len(worldHistory)):
         popForStep[step] = totPop(step, worldHistory)
+<<<<<<< HEAD
     POI = 400 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
@@ -324,6 +323,20 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+5][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+6))
     Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+10][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+11))
     Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+15][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+16))
+=======
+    POI = np.clip(np.argmax(popForStep),10, len(worldHistory)-16)
+    Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
+    Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
+    Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
+    Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
+    Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
+    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI-10][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI-9))
+    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI-5][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI-4))
+    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+1))
+    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+5][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+6))
+    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+10][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+11))
+    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+15][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+16))
+>>>>>>> origin/master
     plt.show()
 
 def DisplaySavedSim(displayVisualSim=True):

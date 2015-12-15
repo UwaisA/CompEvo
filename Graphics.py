@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pygame
 import os
 from pytmx import *
@@ -12,10 +13,8 @@ class Graphics(object):
     WHITE = [255, 255, 255]
     RED = [255, 0, 0]
     BLUE = [0, 0, 255]
-    # tw = 64 # Tile width can get from tmx
-    # th = 32 # Tile height """"""""
     
-    def __init__(self, mapFile = "Outdoors1.tmx"):
+    def __init__(self, mapFile = "isometric_grass_and_water2.tmx"):
         pygame.init()
         os.environ['SDL_VIDEO_CENTERED'] = '1'
         self.clock = pygame.time.Clock()
@@ -76,7 +75,7 @@ class Graphics(object):
             colour = np.clip([int(255*eOverRT),int(255*eOverRT),255], 0, 255)
             pygame.draw.circle(self.screen, colour, (trans_pos[0], trans_pos[1]), 2)
         
-        print 'Map Updated'
+        print('Map Updated')
         pygame.display.flip()
         self.clock.tick(15)
 
@@ -107,8 +106,8 @@ class Graphics(object):
                 tIDsArray[x][y] = tID
                 if not images.has_key(tID):
                     images[tID] = pygame.transform.scale(self.gameMap.get_tile_image(x,y,0), TileBlitSize)
-            print 'Loading map surface locations, approximately %d%% complete' % int(b*(100./self.gridHeight))
-
+            print('Loading map surface locations, approximately %d%% complete' % int(b*(100./self.gridHeight)), end='\r')
+        print('')
         creatPropertyArray = [None]*timeLength
         lastRatio = 0
         for creatArrStep in xrange(timeLength):
@@ -121,7 +120,7 @@ class Graphics(object):
                 tempCreatPropertyArray[i][1] = np.clip([col, col, 255], 0, 255)
             creatPropertyArray[creatArrStep] = tempCreatPropertyArray.astype(int)
             if creatArrStep*100/timeLength >= lastRatio+1:
-                print 'Loading creature locations, approximately %d%% complete' % int(creatArrStep*(100./timeLength))
+                print('Loading creature locations, approximately %d%% complete' % int(creatArrStep*(100./timeLength)), end='\r')
                 lastRatio = np.copy(creatArrStep*100/timeLength)
 
         raw_input('Press Enter to display simulation.....')
@@ -139,26 +138,12 @@ class Graphics(object):
             self.screen.fill(self.WHITE)
             resources = worldHistory[step][2]
             for a,b in np.ndindex((resources.shape[0], resources.shape[1])):
-                # t0a = time.time()
                 x, y = self.gridWidth-a-1, self.gridHeight-b-1
-                # t0ai = time.time()
-                try:
-                    image = images[tIDsArray[x][y]] #pre-scaled at load time
-                except IndexError:
-                    print x,y
-                # t0aii = time.time()
-                self.screen.blit(image, (TransPosArray[x][y][0], TransPosArray[x][y][1]))
-                # t1a = time.time()
+                image = images[tIDsArray[x][y]] #pre-scaled at load time
+                self.screen.blit(image, TransPosArray[x][y])
                 if resourcesGRMaxE[0][x][y] > 0:
-                    # t1ai = time.time()
                     pygame.draw.aalines(self.screen, PolygonColourArray[x][y][step], True, PolygonPosArray[x][y], 1)
-                    # pygame.draw.polygon(self.screen, colour, PolygonPosArray[x][y], 1)
-                # t2a = time.time()
-                # if (a+b)%500 == 0:
-                #     print 'Map time = %s, Resource time = %s' % (t1a-t0a, t2a-t1a)
-                #     print 'xy time = %s, image time = %s, blit time = %s' % (t0ai-t0a, t0aii-t0ai, t1a-t0aii)
-                #     if resourcesGRMaxE[0][x][y] > 0:
-                #         print 'colour time = %s, draw time = %s' % (t1ai-t1a, t2a-t1ai)
+                    #pygame.draw.polygon(self.screen, PolygonColourArray[x][y][step], PolygonPosArray[x][y], 1)
             t1 = time.time()
 
             creatureProps = creatPropertyArray[step]
@@ -171,10 +156,7 @@ class Graphics(object):
                 done = True
                 pygame.quit()
             step += 1
-            print 'Frame time = %s, for1 = %s, for2 = %s' % (time.time()-t0, t1-t0, t2-t1)
-
-
-
+            print('Frame time = %s, for1 = %s, for2 = %s' % (time.time()-t0, t1-t0, t2-t1))
 
 
 
