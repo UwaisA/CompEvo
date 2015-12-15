@@ -312,7 +312,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     popForStep = np.ndarray(len(worldHistory))
     for step in xrange(len(worldHistory)):
         popForStep[step] = totPop(step, worldHistory)
-    POI = np.argmax(popForStep)
+    POI = 400 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
