@@ -282,6 +282,7 @@ def DisplayFrame(worldFrame, resourcesGRMaxE, mapFile, frameNo):
     else:
         colours = (np.array(creatSpec[:,1]))/float(np.max(creatSpec[:,1]))
     Analyse.plotForCreatures(speedReprThreshVis, worldFrame[0], 111, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(frameNo+1))
+    plt.show()
     Graphics(mapFile=mapFile).DisplaySavedMapFrame(worldFrame, resourcesGRMaxE, mapFile, frameNo, colours, creatSpec)
 
 def DisplaySavedSim(displayVisualSim=True, frameNo=None):
