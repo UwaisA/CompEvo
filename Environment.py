@@ -21,7 +21,8 @@ class Environment(object):
     ''' Creature Object to be tested in virtual environment '''
     
     # Initialises Environment
-    def __init__(self, natVar=0.3, mapFile = "isometric_grass_and_water2.tmx"):
+    def __init__(self, natVar=0.3, mapFile = "isometric_grass_and_water2.tmx", randomDeaths=0.):
+        self.randomDeaths = randomDeaths
         self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,2900])),
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([1600,1700])),
                                   3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420]))}
@@ -195,59 +196,6 @@ def LiveTestingNoConfirm(mapFile = None):
     pygame.quit()
     print time.time() - t0
     sys.exit()
-
-def RunSim(noSteps=500, saveData=True, mapFile = None):
-    '''Produces nested output list with format:
-    [[time0], [time1], [time2],..., [timeEnd]]
-    Where each [time] is [livingCreatures, deadCreatures, resources]
-    Except at [time0] = [livingCreatures, deadCreatures, resources, natVar]
-    Also at each [time], deadCreatures is actually any new deadCreatures that [time] not the entire {dict}
-    And livingCreatures, deadCreatures and resources are the {dicts} from Environment object
-    '''
-    t0 = time.time()
-    if mapFile is not None:
-        world = Environment(mapFile=mapFile)
-    else:
-        world = Environment()
-    resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
-    livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
-    deadCreatures_info = deadCreatures_infoFunc({})
-    worldHistory = [[livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0])]]
-    # dump(worldHistory)
-    for step in xrange(noSteps):
-        t1 = time.time()
-        if len(world.livingCreatures()) == 0:
-            break
-        else:
-            if step == 400:
-                creatures = len(world.livingCreatures())
-                print world.livingCreatures()
-                print world.livingCreatures().items()[int(creatures*0.9):]
-                world.livingCreatures_set(dict(world.livingCreatures().items()[int(creatures*0.9):]))
-            world.clearTempDeadCreatures()
-            world.step()
-            t2 = time.time()
-            livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
-            deadCreatures_info = deadCreatures_infoFunc(world.diffDeadCreatures())
-            worldHistory.append([livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0])])
-        print 'Step %d complete. worldHistory in %s seconds. step in %s seconds.' % (step+1, time.time()-t2, t2-t1)
-    # dump(worldHistory)
-    print 'Time for %d steps: %s seconds' %(noSteps, time.time()-t0)
-
-    if saveData == True:
-        print 'Saving simulation data.'
-        mydir = os.path.dirname(os.path.realpath(__file__))
-        subdir = 'Simulations/'
-        sim_dir = os.path.join(mydir, subdir)
-        # home = expanduser("~")
-        # sim_directory = home +'/Simulations/'
-        # sim_path = os.path.dirname(sim_directory)
-        if os.path.exists(sim_dir) == False:
-            os.mkdir(sim_dir)
-        with open(sim_dir+'sim_%s_%s.dat'%(str(int(time.time())), str(noSteps)), 'wb') as out:
-            pickler = pickle.Pickler(out, -1)
-            pickler.dump([worldHistory, resourcesGRMaxE, quickCopy(world.natVar()), world.mapFileDump()])
-    return worldHistory
 
 def livingCreatures_infoFunc(livingCreatures):
     livingCreatures_info = np.zeros((len(livingCreatures), 10))

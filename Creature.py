@@ -1,6 +1,7 @@
 import numpy as np
 import os
 from pytmx import *
+import random
 
 __module__ = ''' This is to classify creature objects in environment
              Check readme.txt for more info
@@ -75,7 +76,7 @@ class Creature(object):
     def step(self):
         self.move()
         self.__physChar['energy'] -= self.costOfLiv()
-        if self.physChar()['energy'] <= 0:
+        if self.physChar()['energy'] <= 0 or random.random()<self.enviro().randomDeaths:
             self.die()
         elif self.enviro().resources()[0][self.gridPos()[0]][self.gridPos()[1]] > 0:
             self.eat()

@@ -2,8 +2,6 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import time
-from itertools import combinations as combs
-import functools
 
 '''
 func must take in step then *funcargs as params
