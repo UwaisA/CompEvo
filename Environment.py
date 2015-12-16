@@ -289,7 +289,9 @@ def DisplayFrame(worldFrame, resourcesGRMaxE, mapFile, frameNo):
         Graphics(mapFile=mapFile).DisplaySavedMapFrame(worldFrame, resourcesGRMaxE, frameNo, colours, creatSpec)
     else:
         Graphics().DisplaySavedMapFrame(worldFrame, resourcesGRMaxE, frameNo, colours, creatSpec)
-        
+
+    plt.show()
+
 def DisplaySavedSim(displayVisualSim=True, frameNo=None):
     filenames = []
     mydir = os.path.dirname(os.path.realpath(__file__))
