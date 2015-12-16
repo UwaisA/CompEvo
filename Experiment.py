@@ -72,4 +72,12 @@ def randomDeaths(step, world):
     if step == 100:
         world.randomDeaths = 0.
 
+def increaseResources(step, world):
+    multiplyFactor = 1.04
+    factor = 1.
+    if step > 390 and step < 410:
+        world.multiplyResources(multiplyFactor)
+        factor = multiplyFactor
+    return factor
+
 RunSim(massExtinction)

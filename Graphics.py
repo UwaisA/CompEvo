@@ -192,8 +192,8 @@ class Graphics(object):
                         if worldFrame[0][i][0] == creatSpec[j][0]:
                             creaturePos = self.TransformPos(np.array([worldFrame[0][i][1], worldFrame[0][i][2]]))
                             creatureColour = cm.gist_ncar(colours[j], bytes=True)[0:3]
-                            pygame.draw.circle(self.screen, self.WHITE, creaturePos, 4)
-                            pygame.draw.circle(self.screen, self.BLACK, creaturePos, 3)
+                            pygame.draw.circle(self.screen, self.WHITE, creaturePos, 5)
+                            pygame.draw.circle(self.screen, self.BLACK, creaturePos, 4)
                             pygame.draw.circle(self.screen, creatureColour, creaturePos, 2)
                 t2 = time.time()
                 

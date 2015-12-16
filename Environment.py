@@ -99,6 +99,9 @@ class Environment(object):
 
     def resources(self):
         return self.__resources
+    
+    def multiplyResources(self, factor):
+        self.__resources *= factor
 
     def natVar(self):
         return self.__natVar
@@ -282,11 +285,14 @@ def DisplayFrame(worldFrame, resourcesGRMaxE, mapFile, frameNo):
     else:
         colours = (np.array(creatSpec[:,1]))/float(np.max(creatSpec[:,1]))
     Analyse.plotForCreatures(speedReprThreshVis, worldFrame[0], 111, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(frameNo+1))
+
     plt.show()
+
     if mapFile is not None:
         Graphics(mapFile=mapFile).DisplaySavedMapFrame(worldFrame, resourcesGRMaxE, frameNo, colours, creatSpec)
     else:
         Graphics().DisplaySavedMapFrame(worldFrame, resourcesGRMaxE, frameNo, colours, creatSpec)
+
 def DisplaySavedSim(displayVisualSim=True, frameNo=None):
     filenames = []
     mydir = os.path.dirname(os.path.realpath(__file__))
