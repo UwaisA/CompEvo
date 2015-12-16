@@ -159,7 +159,7 @@ class Graphics(object):
             step += 1
             print('Frame time = %s, for1 = %s, for2 = %s' % (time.time()-t0, t1-t0, t2-t1))
 
-    def DisplaySavedMapFrame(self, worldFrame, resourcesGRMaxE, mapFile, frameNo, colours, creatSpec):
+    def DisplaySavedMapFrame(self, worldFrame, resourcesGRMaxE, frameNo, colours, creatSpec):
         TileBlitSize = (int(self.tw*(self.RESIZE[0]/float(self.SIZE[0]))), int(self.tw*(self.RESIZE[1]/float(self.SIZE[1]))))
         done = False
         step = 0
@@ -190,8 +190,8 @@ class Graphics(object):
                         if worldFrame[0][i][0] == creatSpec[j][0]:
                             creaturePos = self.TransformPos(np.array([worldFrame[0][i][1], worldFrame[0][i][2]]))
                             creatureColour = cm.gist_ncar(colours[j], bytes=True)[0:3]
-                            pygame.draw.circle(self.screen, self.WHITE, creaturePos, 4)
-                            pygame.draw.circle(self.screen, self.BLACK, creaturePos, 3)
+                            pygame.draw.circle(self.screen, self.WHITE, creaturePos, 5)
+                            pygame.draw.circle(self.screen, self.BLACK, creaturePos, 4)
                             pygame.draw.circle(self.screen, creatureColour, creaturePos, 2)
                 t2 = time.time()
                 
