@@ -14,8 +14,8 @@ class Creature(object):
 
     # Initialises Creature with position, genetics and physical condition
     def __init__(self, creatureNo, creature=None, environment=None,
-                    pos=np.array([0,0]), N_o=2., T_r=10., Agg=0., Speed=3.,
-                    MouthSize=2., Vis=1., E=6.):
+                    pos=np.array([0,0]), N_o=2., T_r=10., Agg=0., Speed=4.,
+                    MouthSize=5., Vis=1., E=6.):
         self.__enviro = environment
         self.__creatureNo = creatureNo
         if creature != None:
