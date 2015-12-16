@@ -30,7 +30,7 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
             break
         else:
             if experimentFunc is not None:
-                if experimentFunc == increaseResources():
+                if experimentFunc == increaseResources:
                     resourceMultiplier = experimentFunc(step, world)
                 else:
                     experimentFunc(step, world)
@@ -77,9 +77,9 @@ def randomDeaths(step, world):
 def increaseResources(step, world):
     multiplyFactor = 1.04
     factor = 1.
-    if step > 390 and step < 410:
+    if step > 40 and step < 60:
         world.multiplyResources(multiplyFactor)
         factor = multiplyFactor
     return factor
 
-RunSim(massExtinction)
+RunSim(increaseResources, noSteps=100)
