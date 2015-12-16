@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="isometric" renderorder="right-down" width="50" height="50" tilewidth="64" tileheight="32" nextobjectid="1">
+ <properties>
+  <property name="Width" value="50"/>
+ </properties>
+ <tileset firstgid="1" name="Shrub_Grass_Water" tilewidth="64" tileheight="64" tilecount="40">
+  <tileoffset x="0" y="15"/>
+  <image source="Shrub Grass Water.png" width="512" height="320"/>
+  <terraintypes>
+   <terrain name="Grass" tile="-1"/>
+   <terrain name="Water" tile="-1"/>
+   <terrain name="Shrub" tile="-1"/>
+  </terraintypes>
+  <tile id="0" terrain="0,0,0,0">
+   <properties>
+    <property name="tID" value="0"/>
+   </properties>
+  </tile>
+  <tile id="1" terrain="0,0,0,0">
+   <properties>
+    <property name="tID" value="1"/>
+   </properties>
+  </tile>
+  <tile id="2" terrain="0,0,0,0">
+   <properties>
+    <property name="tID" value="2"/>
+   </properties>
+  </tile>
+  <tile id="3" terrain="0,0,0,0">
+   <properties>
+    <property name="tID" value="3"/>
+   </properties>
+  </tile>
+  <tile id="4" terrain="0,0,0,2">
+   <properties>
+    <property name="tID" value="24"/>
+   </properties>
+  </tile>
+  <tile id="5" terrain="0,0,2,0">
+   <properties>
+    <property name="tID" value="25"/>
+   </properties>
+  </tile>
+  <tile id="6" terrain="2,0,0,0">
+   <properties>
+    <property name="tID" value="26"/>
+   </properties>
+  </tile>
+  <tile id="7" terrain="0,2,0,0">
+   <properties>
+    <property name="tID" value="27"/>
+   </properties>
+  </tile>
+  <tile id="8" terrain="0,0,0,1">
+   <properties>
+    <property name="tID" value="4"/>
+   </properties>
+  </tile>
+  <tile id="9" terrain="0,0,1,0">
+   <properties>
+    <property name="tID" value="5"/>
+   </properties>
+  </tile>
+  <tile id="10" terrain="1,0,0,0">
+   <properties>
+    <property name="tID" value="6"/>
+   </properties>
+  </tile>
+  <tile id="11" terrain="0,1,0,0">
+   <properties>
+    <property name="tID" value="7"/>
+   </properties>
+  </tile>
+  <tile id="12" terrain="0,2,2,2">
+   <properties>
+    <property name="tID" value="28"/>
+   </properties>
+  </tile>
+  <tile id="13" terrain="2,0,2,2">
+   <properties>
+    <property name="tID" value="29"/>
+   </properties>
+  </tile>
+  <tile id="14" terrain="2,2,2,0">
+   <properties>
+    <property name="tID" value="30"/>
+   </properties>
+  </tile>
+  <tile id="15" terrain="2,2,0,2">
+   <properties>
+    <property name="tID" value="31"/>
+   </properties>
+  </tile>
+  <tile id="16" terrain="0,1,1,1">
+   <properties>
+    <property name="tID" value="8"/>
+   </properties>
+  </tile>
+  <tile id="17" terrain="1,0,1,1">
+   <properties>
+    <property name="tID" value="9"/>
+   </properties>
+  </tile>
+  <tile id="18" terrain="1,1,1,0">
+   <properties>
+    <property name="tID" value="10"/>
+   </properties>
+  </tile>
+  <tile id="19" terrain="1,1,0,1">
+   <properties>
+    <property name="tID" value="11"/>
+   </properties>
+  </tile>
+  <tile id="20" terrain="0,0,2,2">
+   <properties>
+    <property name="tID" value="32"/>
+   </properties>
+  </tile>
+  <tile id="21" terrain="2,0,2,0">
+   <properties>
+    <property name="tID" value="33"/>
+   </properties>
+  </tile>
+  <tile id="22" terrain="2,2,0,0">
+   <properties>
+    <property name="tID" value="34"/>
+   </properties>
+  </tile>
+  <tile id="23" terrain="0,2,0,2">
+   <properties>
+    <property name="tID" value="35"/>
+   </properties>
+  </tile>
+  <tile id="24" terrain="0,0,1,1">
+   <properties>
+    <property name="tID" value="12"/>
+   </properties>
+  </tile>
+  <tile id="25" terrain="1,0,1,0">
+   <properties>
+    <property name="tID" value="13"/>
+   </properties>
+  </tile>
+  <tile id="26" terrain="1,1,0,0">
+   <properties>
+    <property name="tID" value="14"/>
+   </properties>
+  </tile>
+  <tile id="27" terrain="0,1,0,1">
+   <properties>
+    <property name="tID" value="15"/>
+   </properties>
+  </tile>
+  <tile id="28" terrain="2,0,0,2">
+   <properties>
+    <property name="tID" value="36"/>
+   </properties>
+  </tile>
+  <tile id="29" terrain="0,2,2,0">
+   <properties>
+    <property name="tID" value="37"/>
+   </properties>
+  </tile>
+  <tile id="30" terrain="2,2,2,2">
+   <properties>
+    <property name="tID" value="38"/>
+   </properties>
+  </tile>
+  <tile id="31" terrain="0,0,0,0">
+   <properties>
+    <property name="tID" value="39"/>
+   </properties>
+  </tile>
+  <tile id="32" terrain="0,0,1,1">
+   <properties>
+    <property name="tID" value="16"/>
+   </properties>
+  </tile>
+  <tile id="33" terrain="1,0,1,0">
+   <properties>
+    <property name="tID" value="17"/>
+   </properties>
+  </tile>
+  <tile id="34" terrain="1,1,0,0">
+   <properties>
+    <property name="tID" value="18"/>
+   </properties>
+  </tile>
+  <tile id="35" terrain="0,1,0,1">
+   <properties>
+    <property name="tID" value="19"/>
+   </properties>
+  </tile>
+  <tile id="36" terrain="0,1,1,0">
+   <properties>
+    <property name="tID" value="20"/>
+   </properties>
+  </tile>
+  <tile id="37" terrain="1,0,0,1">
+   <properties>
+    <property name="tID" value="20"/>
+   </properties>
+  </tile>
+  <tile id="38" terrain="1,1,1,1">
+   <properties>
+    <property name="tID" value="22"/>
+   </properties>
+  </tile>
+  <tile id="39" terrain="1,1,1,1">
+   <properties>
+    <property name="tID" value="23"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Tile Layer 1" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJyVmc1y2zAMhCnJl7S9JM0lbg6sk2n7/k9Ye0Y7/rReUMqBE4UiCSwWf5T/ttb+hfEXo5pL79Ja33N03T975tyRvdV7P3c0l/btYa50ruRV5484GfEy0ifNp/NGuu/ZOunw8zpe7f1t7td1fODvq+35sDWvxf6PcH6Ff+TnI1w3ed+v48cqV7JvcycbP6DPy3V8C+/T/qfreN7hwXUS/l9ta4PKT5I+1VgOYPEhDM4h9fP5mw36dUzXMZvMipPb8+UgjtN69lEsxHCTc7b37+s8z+jrmIFjWdfu5aCv4JAsYUn6OQb6b/JT6bC0O+8u77PlGGI8pli46fF2Hb/Xoedvq406bFTFCv0myTit+umMt/Uc8XACHxUO2SnZkpzTD6mPc5KwvO9gcLyJW8dR1dcKh58vfaZ25723x1iRTZUTRhj28uC0ymB8VHl6FBu0AfHq7Lk95hNyMx3AkLBQJ/kw/Sr1HhUffvYZ9pH+C7hh7XhddRF3R/BM0NXzVxUfnnM9PyQs8hkNj8fF9sifZqw5ygn9/SbD62iqI+cdHFXM02ZJ194yxr2RcqDLT3jE/1E7JRuQF4+hCWMPQ2855oVj1GOegw6jmOd+yVHtdV3ntq3Le3LEm/K1+rTP9hjXKV8dkeE5qerPerv79dLufQbz9ZE4+W64EhfuV30gY8FwLMzJ3lMoX4oPPe9hYB5UTzHqlb0ujPIjdWCsOCfaLwzkx5/3/Guv9vn/yruyW8JAW3n+0FC+mGy9uEi4RpwwJo/ct7xOO/dPbdsnVHkw1S75iHRf7JxR3poKPtI9WDjYWzqO9/bYuyTfYqwxDxOTz1U4tP+z5bhOOevSHrnobavzn3bv/ZiH3TYX7GWMMAcIw17u8l5k7z7MPsj9U7ZRHpSvu++mHCzfoc70sSoeqUPFe/Kts53ZjY/etjXZ85ZzLH7dl8hzde9zPuhb6d6R4rO3rd6UWfUeSUaKd7fLDDmOR7lBNvBYr+KEvjWbLPoWdRnFu9eT3rYc+zlLIUu2S72Vc8EY4R2P+dJ5cF/wnsFzV6rhwiJ/ls7K8YzXxEcVL+f2yLfXtMXkkhN+i/L7coWDvaM4UD5hvBJHlbuS7bzX7oEbr9npW5l8y+PD48R9gPmGfFf1z2OTdzz2quRiaVtMJ6xN/dClbfME8XScw9ws39Jar4WjHot3POGZIYt1jb045ff2GPfn9miPKsbFNX2rt+13xKQ/3+l7O+8uHtdeC6hTb49xKT54j0q+RY41R05ST+r6C4O+t6tm6xz5kuNgPuMdXPbkN/duaz13OFfddPG4SzEum0k33ltkS8phv9rtndt9blvfnO0v17hNfCTfcr9SfpQd/Dun9HcZsz2Tu47B+OZcOmfCe8+9KR6qfkj5ge88/1Im/2ct4zcuv4PoHN+74MzJzk/3afctv1sQe+ovuDblTP5WoPpK/TxPCRft1NvWNuoXRzWdfWKqZ2eT53mTOnjtvdgaYdJf4pvDmX1wdooR3qW8FyAn7kve97ksxliqo15/Uk+nedXDKm/x9wn/juD3POYa9y/fl+KPunq+9vzgfruHg/Gh/VWvlO69vC+kPj59pxe3PI/5pNs6709S/aAc+ivxsyd2HLR1b5lL5TDFod9vmWPJOfXyPstj5WJ73Lbkzf2ZPFbfnG5cKodd2jZWyMHJ5h1r9XttimPWYNdJ69Lvn294fi7k+Z2X8SE7yE5PON/7rL3cKz2o27Otfwlzoz405UjaI8n077kvrbbPkR646mV8bbW/stvIHl/RMe0Z4Tli969irzirdKz6kaPnj84c2TLxNbL1HodV/f4P1m7O+A==
+  </data>
+ </layer>
+</map>

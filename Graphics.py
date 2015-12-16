@@ -107,7 +107,7 @@ class Graphics(object):
                 if not images.has_key(tID):
                     images[tID] = pygame.transform.scale(self.gameMap.get_tile_image(x,y,0), TileBlitSize)
             print('Loading map surface locations, approximately %d%% complete' % int(b*(100./self.gridHeight)), end='\r')
-        print('')
+        print('/n')
         creatPropertyArray = [None]*timeLength
         lastRatio = 0
         for creatArrStep in xrange(timeLength):

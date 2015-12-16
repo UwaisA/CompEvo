@@ -24,7 +24,8 @@ class Environment(object):
     def __init__(self, natVar=0.3, mapFile = "isometric_grass_and_water2.tmx"):
         self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,2900])),
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([1600,1700])),
-                                  3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420]))}
+                                  3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420])),
+                                  4: Creature(creatureNo=4, environment=self, pos=np.array([550,550]))}
         self.__deadCreatures = {}
         self.mapFile = mapFile #This is the filename of the map to be used for the display of this simulation
         mydir = os.path.dirname(os.path.realpath(__file__))
@@ -310,7 +311,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     popForStep = np.ndarray(len(worldHistory))
     for step in xrange(len(worldHistory)):
         popForStep[step] = totPop(step, worldHistory)
-<<<<<<< HEAD
+
     POI = 400 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
@@ -323,20 +324,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+5][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+6))
     Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+10][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+11))
     Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+15][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+16))
-=======
-    POI = np.clip(np.argmax(popForStep),10, len(worldHistory)-16)
-    Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
-    Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
-    Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
-    Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
-    Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
-    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI-10][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI-9))
-    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI-5][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI-4))
-    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+1))
-    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+5][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+6))
-    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+10][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+11))
-    #Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+15][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+16))
->>>>>>> origin/master
+
     plt.show()
 
 def DisplaySavedSim(displayVisualSim=True):
