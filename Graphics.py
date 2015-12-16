@@ -7,6 +7,7 @@ from pygame.locals import *
 from Creature import Creature
 import numpy as np
 import time
+from matplotlib import cm
 
 class Graphics(object):
     BLACK = [0, 0, 0]
@@ -107,7 +108,7 @@ class Graphics(object):
                 if not images.has_key(tID):
                     images[tID] = pygame.transform.scale(self.gameMap.get_tile_image(x,y,0), TileBlitSize)
             print('Loading map surface locations, approximately %d%% complete' % int(b*(100./self.gridHeight)), end='\r')
-        print('/n')
+        print('')
         creatPropertyArray = [None]*timeLength
         lastRatio = 0
         for creatArrStep in xrange(timeLength):
@@ -122,7 +123,7 @@ class Graphics(object):
             if creatArrStep*100/timeLength >= lastRatio+1:
                 print('Loading creature locations, approximately %d%% complete' % int(creatArrStep*(100./timeLength)), end='\r')
                 lastRatio = np.copy(creatArrStep*100/timeLength)
-
+        print('')
         raw_input('Press Enter to display simulation.....')
 
         step = 0
@@ -158,10 +159,47 @@ class Graphics(object):
             step += 1
             print('Frame time = %s, for1 = %s, for2 = %s' % (time.time()-t0, t1-t0, t2-t1))
 
+    def DisplaySavedMapFrame(self, worldFrame, resourcesGRMaxE, mapFile, frameNo, colours, creatSpec):
+        TileBlitSize = (int(self.tw*(self.RESIZE[0]/float(self.SIZE[0]))), int(self.tw*(self.RESIZE[1]/float(self.SIZE[1]))))
+        done = False
+        step = 0
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True
+                    pygame.quit()
+                    return
+            if step == 0:
+                t0 = time.time()
+                self.screen.fill(self.WHITE)
+                resources = worldFrame[2]
+                for a,b in np.ndindex((resources.shape[0], resources.shape[1])):
+                    x, y = self.gridWidth-a-1, self.gridHeight-b-1
+                    image = pygame.transform.scale(self.gameMap.get_tile_image(x,y,0), TileBlitSize) #pre-scaled at load time
+                    self.screen.blit(image, self.TransformMap(np.array([x, y])))
+                    if resourcesGRMaxE[0][x][y] > 0:
+                        tempTransPos = self.TransformResourcePos(np.array([x,y]))
+                        polygonPos = [(tempTransPos[0], tempTransPos[1]+int((self.th/16.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0]+int((self.tw*7./16.)*(self.RESIZE[0]/float(self.SIZE[0]))), tempTransPos[1]+int((self.th/2.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0], tempTransPos[1]+int((self.th*15./16.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0]-int((self.tw*7./16.)*(self.RESIZE[0]/float(self.SIZE[0]))), tempTransPos[1]+int((self.tw/4.)*(self.RESIZE[1]/float(self.SIZE[1]))))]
+                        polygonColour = [self.RED[0]*worldFrame[2][x][y]/float(resourcesGRMaxE[1][x][y]), self.RED[1], self.RED[2]]
+                        pygame.draw.aalines(self.screen, polygonColour, True, polygonPos, 1)
+                        #pygame.draw.polygon(self.screen, PolygonColourArray[x][y][step], PolygonPosArray[x][y], 1)
+                t1 = time.time()
 
-
-
-
+                for i in xrange(len(worldFrame[0])):
+                    for j in xrange(len(creatSpec)):
+                        if worldFrame[0][i][0] == creatSpec[j][0]:
+                            creaturePos = self.TransformPos(np.array([worldFrame[0][i][1], worldFrame[0][i][2]]))
+                            creatureColour = cm.gist_ncar(colours[j], bytes=True)[0:3]
+                            pygame.draw.circle(self.screen, self.WHITE, creaturePos, 4)
+                            pygame.draw.circle(self.screen, self.BLACK, creaturePos, 3)
+                            pygame.draw.circle(self.screen, creatureColour, creaturePos, 2)
+                t2 = time.time()
+                
+                print('Frame time = %s, for1 = %s, for2 = %s' % (time.time()-t0, t1-t0, t2-t1))
+            pygame.display.flip()
+            self.clock.tick(15)
+            step += 1
+        
 
 
 

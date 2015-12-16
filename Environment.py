@@ -312,7 +312,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     for step in xrange(len(worldHistory)):
         popForStep[step] = totPop(step, worldHistory)
 
-    POI = 400 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
+    POI = 180 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
     #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
     #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
     #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
@@ -327,7 +327,16 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
 
     plt.show()
 
-def DisplaySavedSim(displayVisualSim=True):
+def DisplayFrame(worldFrame, resourcesGRMaxE, mapFile, frameNo):
+    creatSpec = Analyse.findSpecies(worldFrame[0])
+    if np.max(creatSpec[:,1])==0:
+        colours = np.array(creatSpec[:,1])
+    else:
+        colours = (np.array(creatSpec[:,1]))/float(np.max(creatSpec[:,1]))
+    Analyse.plotForCreatures(speedReprThreshVis, worldFrame[0], 111, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(frameNo+1))
+    Graphics(mapFile=mapFile).DisplaySavedMapFrame(worldFrame, resourcesGRMaxE, mapFile, frameNo, colours, creatSpec)
+
+def DisplaySavedSim(displayVisualSim=True, frameNo=None):
     filenames = []
     mydir = os.path.dirname(os.path.realpath(__file__))
     subdir = 'Simulations/'
@@ -356,8 +365,10 @@ def DisplaySavedSim(displayVisualSim=True):
             mapFile = data[3]
         else:
             mapFile = None
-        
-    DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim, mapFile)
+    if frameNo is None:    
+        DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim, mapFile)
+    else:
+        DisplayFrame(worldHistory[frameNo], resourcesGRMaxE, mapFile, frameNo)
 
 def dump(obj, nested_level=0, output=sys.stdout):
     spacing = '   '
