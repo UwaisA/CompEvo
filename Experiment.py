@@ -6,7 +6,7 @@ import os
 import cPickle as pickle
 import random
 
-def RunSim(experimentFunc, noSteps=500, saveData=True, mapFile = None):
+def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
     '''Produces nested output list with format:
     [[time0], [time1], [time2],..., [timeEnd]]
     Where each [time] is [livingCreatures, deadCreatures, resources]
@@ -22,20 +22,25 @@ def RunSim(experimentFunc, noSteps=500, saveData=True, mapFile = None):
     resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
     deadCreatures_info = deadCreatures_infoFunc({})
-    worldHistory = [[livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0])]]
+    worldHistory = [[livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0], 1.)]]
     # dump(worldHistory)
     for step in xrange(noSteps):
         t1 = time.time()
         if len(world.livingCreatures()) == 0:
             break
         else:
-            experimentFunc(step, world)
+            if experimentFunc is not None:
+                if experimentFunc == increaseResources():
+                    resourceMultiplier = experimentFunc(step, world)
+                else:
+                    experimentFunc(step, world)
+                    resourceMultiplier = 1.
             world.clearTempDeadCreatures()
             world.step()
             t2 = time.time()
             livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
             deadCreatures_info = deadCreatures_infoFunc(world.diffDeadCreatures())
-            worldHistory.append([livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0])])
+            worldHistory.append([livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0]), resourceMultiplier])
         print 'Step %d complete. worldHistory in %s seconds. step in %s seconds.' % (step+1, time.time()-t2, t2-t1)
     # dump(worldHistory)
     print 'Time for %d steps: %s seconds' %(noSteps, time.time()-t0)
