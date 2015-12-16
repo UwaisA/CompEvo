@@ -35,6 +35,8 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
                 else:
                     experimentFunc(step, world)
                     resourceMultiplier = 1.
+            else:
+                resourceMultiplier = 1.
             world.clearTempDeadCreatures()
             world.step()
             t2 = time.time()
