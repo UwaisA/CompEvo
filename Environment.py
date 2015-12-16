@@ -250,6 +250,9 @@ def speedVis(creature):
 def speedReprThreshVis(creature):
     return creature[7], creature[5], creature[9]
 
+def speedReprThreshMouth(creature):
+    return creature[7], creature[5], creature[8]
+
 def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=None):
     if displayVisualSim:
         if mapFile is not None:
@@ -263,18 +266,18 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     for step in xrange(len(worldHistory)):
         popForStep[step] = totPop(step, worldHistory)
 
-    POI = 180 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
-    #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
-    #Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
-    #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
-    #Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
-    #Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI-10][0], 231, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI-9))
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI-5][0], 232, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI-4))
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI][0], 233, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+1))
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+5][0], 234, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+6))
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+10][0], 235, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+11))
-    Analyse.plotForCreatures(speedReprThreshVis, worldHistory[POI+15][0], 236, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(POI+16))
+    POI = 400 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
+    # Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
+    # Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
+    # Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
+    # Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
+    # Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI-5][0], 231, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI-4))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI][0], 232, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+1))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+5][0], 233, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+6))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+50][0], 234, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+100][0], 235, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+101))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+200][0], 236, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+201))
 
     plt.show()
 
@@ -284,7 +287,7 @@ def DisplayFrame(worldFrame, resourcesGRMaxE, mapFile, frameNo):
         colours = np.array(creatSpec[:,1])
     else:
         colours = (np.array(creatSpec[:,1]))/float(np.max(creatSpec[:,1]))
-    Analyse.plotForCreatures(speedReprThreshVis, worldFrame[0], 111, 'Speed', 'Repr Thresh', 'Vision', 'Genetics Plot in %dth step'%(frameNo+1))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldFrame[0], 111, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(frameNo+1))
 
     plt.show()
 

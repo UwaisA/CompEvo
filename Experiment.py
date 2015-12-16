@@ -30,7 +30,7 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
             break
         else:
             if experimentFunc is not None:
-                if experimentFunc == increaseResources():
+                if experimentFunc == increaseResources:
                     resourceMultiplier = experimentFunc(step, world)
                 else:
                     experimentFunc(step, world)

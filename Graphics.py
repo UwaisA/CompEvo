@@ -103,7 +103,7 @@ class Graphics(object):
                     PolygonPosArray[x][y] = [(tempTransPos[0], tempTransPos[1]+int((self.th/16.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0]+int((self.tw*7./16.)*(self.RESIZE[0]/float(self.SIZE[0]))), tempTransPos[1]+int((self.th/2.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0], tempTransPos[1]+int((self.th*15./16.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0]-int((self.tw*7./16.)*(self.RESIZE[0]/float(self.SIZE[0]))), tempTransPos[1]+int((self.tw/4.)*(self.RESIZE[1]/float(self.SIZE[1]))))]
                     for timeStep in xrange(timeLength):
                         if len(worldHistory[timeStep]) == 4:
-                            resourcesGRMaxE *= worldHistory[timeStep][3]
+                            resourcesGRMaxE[1][x][y] *= worldHistory[timeStep][3]
                         PolygonColourArray[x][y][timeStep] = [self.RED[0]*worldHistory[timeStep][2][x][y]/float(resourcesGRMaxE[1][x][y]), self.RED[1], self.RED[2]]
                 tID = int(self.tmxdata.get_tile_properties(x,y,0)['tID'])
                 tIDsArray[x][y] = tID
@@ -181,7 +181,7 @@ class Graphics(object):
                     self.screen.blit(image, self.TransformMap(np.array([x, y])))
                     if resourcesGRMaxE[0][x][y] > 0:
                         if len(worldFrame) == 4:
-                            resourcesGRMaxE *= worldFrame[3]
+                            resourcesGRMaxE[1][x][y] *= worldFrame[3]
                         tempTransPos = self.TransformResourcePos(np.array([x,y]))
                         polygonPos = [(tempTransPos[0], tempTransPos[1]+int((self.th/16.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0]+int((self.tw*7./16.)*(self.RESIZE[0]/float(self.SIZE[0]))), tempTransPos[1]+int((self.th/2.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0], tempTransPos[1]+int((self.th*15./16.)*(self.RESIZE[1]/float(self.SIZE[1])))), (tempTransPos[0]-int((self.tw*7./16.)*(self.RESIZE[0]/float(self.SIZE[0]))), tempTransPos[1]+int((self.tw/4.)*(self.RESIZE[1]/float(self.SIZE[1]))))]
                         polygonColour = [self.RED[0]*worldFrame[2][x][y]/float(resourcesGRMaxE[1][x][y]), self.RED[1], self.RED[2]]

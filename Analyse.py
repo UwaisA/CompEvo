@@ -100,6 +100,7 @@ def findSpecies(livingCreatures):
                 newToBeAnalysed.remove(nextVal)
                 break
     print 'total',time.time()-t0,'newTripleFor',time.time()-t2,'len liv creat',len(livingCreatures)
+    print np.max(creatSpec[:,1])+1
     return creatSpec
 
 def genList(livingCreatures, creat1, creat2):
