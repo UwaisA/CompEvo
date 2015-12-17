@@ -244,6 +244,14 @@ def avgVis(step, worldHistory):
         return 0
     return float(totVis)/totPop(step, worldHistory)
 
+def biodiversity(step, worldHistory):
+    creatSpec = Analyse.findSpecies(worldHistory[step][0])
+    specPop = {}
+    for i in creatSpec[:,1]:
+        specPop[i] = specPop.get(i, 0) + 1
+    specPops = np.array(specPop.values())
+    return (np.sum((specPops/float(np.sum(specPops)))**0.5))**2
+
 def speedVis(creature):
     return creature[7], creature[9]
 
@@ -267,17 +275,18 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
         popForStep[step] = totPop(step, worldHistory)
 
     POI = 400 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
-    # Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
-    # Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
-    # Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
-    # Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
-    # Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
+    #Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', 1, (worldHistory))
+    Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', 1, (worldHistory))
+    #Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
+    #Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', 1, (worldHistory))
+    #Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', 1, (worldHistory))
+    #Analyse.plotForSteps(biodiversity, 236, len(worldHistory), "Biodiversity", 'bo-', 10, (worldHistory))
     Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI-5][0], 231, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI-4))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI][0], 232, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+1))
+    #Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI][0], 232, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+1))
     Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+5][0], 233, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+6))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+50][0], 234, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+100][0], 235, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+101))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+200][0], 236, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+201))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+25][0], 234, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+26))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+50][0], 235, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+100][0], 236, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+101))
 
     plt.show()
 

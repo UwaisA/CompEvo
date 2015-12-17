@@ -6,11 +6,11 @@ import time
 '''
 func must take in step then *funcargs as params
 '''
-def plotForSteps(func, subplot, maxSteps, funcName="func Name", colour='ro-', *funcargs):
-    xRes = np.arange(maxSteps)
-    yRes = np.zeros(maxSteps)
-    for i in xrange(maxSteps):
-        yRes[i] = func(i, *funcargs)
+def plotForSteps(func, subplot, maxSteps, funcName="func Name", colour='ro-', stepInterval=1, *funcargs):
+    xRes = np.arange(0, maxSteps, stepInterval)
+    yRes = np.zeros(len(xRes))
+    for i, xi in enumerate(xRes):
+        yRes[i] = func(xi, *funcargs)
     plot(subplot, xRes, yRes, colour=colour, xlabel="Step number", ylabel=funcName, title=funcName+" vs Time")
 
 #draws a line graph using the parameters passed to it
@@ -99,8 +99,7 @@ def findSpecies(livingCreatures):
                 creatSpec[nextVal][1] = curSpec
                 newToBeAnalysed.remove(nextVal)
                 break
-    print 'total',time.time()-t0,'newTripleFor',time.time()-t2,'len liv creat',len(livingCreatures)
-    print np.max(creatSpec[:,1])+1
+    print 'creatures:',len(livingCreatures), 'species:', np.max(creatSpec[:,1])+1
     return creatSpec
 
 def genList(livingCreatures, creat1, creat2):

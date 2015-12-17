@@ -82,4 +82,7 @@ def increaseResources(step, world):
         factor = multiplyFactor
     return factor
 
-RunSim(increaseResources, noSteps=100)
+def empty(step, world):
+    pass
+
+RunSim(empty, noSteps=400, mapFile='MediumGrassAndShrubCyclicalConnectedIslands.tmx')
