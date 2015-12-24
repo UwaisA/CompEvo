@@ -245,12 +245,15 @@ def avgVis(step, worldHistory):
     return float(totVis)/totPop(step, worldHistory)
 
 def biodiversity(step, worldHistory):
+    '''Simpson's definition of diversity:
+    1 - (probability of two randomly chosen items being in the same group)
+    '''
     creatSpec = Analyse.findSpecies(worldHistory[step][0])
-    specPop = {}
-    for i in creatSpec[:,1]:
-        specPop[i] = specPop.get(i, 0) + 1
-    specPops = np.array(specPop.values())
-    return (np.sum((specPops/float(np.sum(specPops)))**0.5))**2
+    specPops = {}
+    for creat in creatSpec:
+        specPops[creat[1]] = specPops.get(creat[1], 0)+1
+    arr = np.array(specPops.values(), dtype=float)
+    return 1- (np.sum(arr*(arr-1))/(np.sum(arr)*(np.sum(arr)-1)))
 
 def speedVis(creature):
     return creature[7], creature[9]
