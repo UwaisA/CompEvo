@@ -4,9 +4,6 @@ import time
 import numpy as np
 import os
 import cPickle as pickle
-import random
-
-globWorld = 0
 
 def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
     '''Produces nested output list with format:
@@ -21,8 +18,6 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
         world = Environment(mapFile=mapFile)
     else:
         world = Environment()
-    global globWorld
-    globWorld = world
     resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
     diffDeadCreatures_info = diffDeadCreatures_infoFunc(world.deadCreatures())
@@ -69,7 +64,7 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
 #Experiment funcs must have step and world as params
 
 def massExtinction(step, world):
-    if step == 50:
+    if step == 500:
         world.livingCreatures().killProportion(0.9)
 
 def randomDeaths(step, world):
@@ -87,4 +82,4 @@ def increaseResources(step, world):
 def empty(step, world):
     pass
 
-RunSim(massExtinction, noSteps=100, mapFile='MediumGrassAndShrubCyclicalConnectedIslands.tmx')
+RunSim(massExtinction, noSteps=1000, mapFile='MediumGrassAndShrubCyclicalConnectedIslands.tmx')

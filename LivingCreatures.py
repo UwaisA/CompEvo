@@ -110,11 +110,12 @@ class LivingCreatures(Creatures):
     def allEat(self):
         #positions = self.gridPos()
         t0 = time.time()
+        posxy = (self._creatsArr[:,1:3]/self.pxPerTile).astype(int)
+        res0 = self.enviro().resources()[0]
         for i in np.argwhere(self._creatsArr[:,0]>0).ravel():
-            x,y = (self._creatsArr[i][1:3]/self.pxPerTile).astype(int)
-            energyIncrease = min(self._creatsArr[i][8], self.enviro().resources()[0][x][y])
+            energyIncrease = min(self._creatsArr[i][8], res0[posxy[i][0], posxy[i][1]])
             self._creatsArr[i][3] += energyIncrease
-            self.enviro().resources()[0][x][y] -= energyIncrease
+            res0[posxy[i][0], posxy[i][1]] -= energyIncrease
         print 'allEat', time.time()-t0
         #non-functioning vectorized version
         #food = np.copy(self.enviro().resources()[0, positions[:,0], positions[:,1]])
