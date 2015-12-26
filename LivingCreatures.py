@@ -93,30 +93,36 @@ class LivingCreatures(Creatures):
     def vDirDecision(self, gridPosX, gridPosY, speed, vis, costOfLiv, mapW, mapH):
         t0 = time.time()
         out = np.ndarray((len(gridPosX), 2), float)
+        lims = np.ndarray((len(gridPosX), 6), int)
+        lims[:,0] = gridPosX-vis
+        lims[:,1] = gridPosX+vis+1
+        lims[:,2] = gridPosY-vis
+        lims[:,3] = gridPosY+vis+1
+        lims[:,4] = -lims[:,0]
+        lims[:,5] = -lims[:,2]
+        lims = np.clip(lims, [0,0,0,0,0,0], [mapW, mapW, mapH, mapH, mapW+1, mapH+1])
+        speedFactorMult = self.pxPerTile/(speed*3)*costOfLiv
+        maxLocs = np.zeros(len(gridPosX), int)
+        res0 = self.enviro().resources()[0]
+        creatExists = self._creatsArr[:,0]>0
         for i in xrange(len(gridPosX)):
-            out[i] = self.dirDecision(gridPosX[i], gridPosY[i], speed[i], vis[i], costOfLiv[i], mapW, mapH)
+            if creatExists[i]:
+                toLookAt = res0[lims[i,0]:lims[i,1], lims[i,2]:lims[i,3]]
+                lookAtDist = distFactor(2*vis[i]+1)*speedFactorMult[i]
+                addAtPos(lookAtDist, toLookAt, lims[i,4:6])
+                maxLocs[i] = np.argmax(lookAtDist)
+        out[:,0] = maxLocs/(2*vis+1) - vis
+        out[:,1] = maxLocs%(2*vis+1) - vis
         print 'vDirDec',time.time()-t0
         return out
     
-    def dirDecision(self, gridPosX, gridPosY, speed, vis, costOfLiv, mapW, mapH):
-        x,y = gridPosX, gridPosY
-        toLookAt = np.copy(self.enviro().resources()[0][max(x-vis, 0):min(x+vis+1, mapW),
-                                                        max(y-vis, 0):min(y+vis+1, mapH)])
-        lookAtDist = distFactor(2*vis+1)*self.pxPerTile/(speed*3)*costOfLiv
-        addAtPos(lookAtDist, toLookAt, (abs(np.clip((x-vis), -mapW-1, 0)), abs(np.clip((y-vis), -mapH-1, 0))))
-        maxLoc = np.argmax(lookAtDist)
-        return np.array([(int) (maxLoc/(2*vis+1)) - vis, (int) (maxLoc%(2*vis+1)) - vis])
-    
     def allEat(self):
-        #positions = self.gridPos()
-        t0 = time.time()
-        posxy = (self._creatsArr[:,1:3]/self.pxPerTile).astype(int)
+        posxy = self.gridPos()
         res0 = self.enviro().resources()[0]
         for i in np.argwhere(self._creatsArr[:,0]>0).ravel():
-            energyIncrease = min(self._creatsArr[i][8], res0[posxy[i][0], posxy[i][1]])
-            self._creatsArr[i][3] += energyIncrease
-            res0[posxy[i][0], posxy[i][1]] -= energyIncrease
-        print 'allEat', time.time()-t0
+            energyIncrease = min(self._creatsArr[i,8], res0[posxy[i,0], posxy[i,1]])
+            self._creatsArr[i,3] += energyIncrease
+            res0[posxy[i,0], posxy[i,1]] -= energyIncrease
         #non-functioning vectorized version
         #food = np.copy(self.enviro().resources()[0, positions[:,0], positions[:,1]])
         #food = np.clip(food, 0, self._creatsArr[:,8])
