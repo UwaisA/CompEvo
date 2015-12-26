@@ -4,7 +4,6 @@ import os
 from pytmx import *
 from pytmx.util_pygame import load_pygame
 from pygame.locals import *
-from Creature import Creature
 import numpy as np
 import time
 from matplotlib import cm

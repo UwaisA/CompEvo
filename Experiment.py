@@ -6,6 +6,8 @@ import os
 import cPickle as pickle
 import random
 
+globWorld = 0
+
 def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
     '''Produces nested output list with format:
     [[time0], [time1], [time2],..., [timeEnd]]
@@ -19,14 +21,16 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
         world = Environment(mapFile=mapFile)
     else:
         world = Environment()
+    global globWorld
+    globWorld = world
     resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
-    deadCreatures_info = deadCreatures_infoFunc({})
-    worldHistory = [[livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0], 1.)]]
+    diffDeadCreatures_info = diffDeadCreatures_infoFunc(world.deadCreatures())
+    worldHistory = [[livingCreatures_info, diffDeadCreatures_info, np.copy(world.resources()[0], 1.)]]
     # dump(worldHistory)
     for step in xrange(noSteps):
         t1 = time.time()
-        if len(world.livingCreatures()) == 0:
+        if world.livingCreatures().isEmpty():
             break
         else:
             if experimentFunc is not None:
@@ -41,8 +45,8 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
             world.step()
             t2 = time.time()
             livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
-            deadCreatures_info = deadCreatures_infoFunc(world.diffDeadCreatures())
-            worldHistory.append([livingCreatures_info, deadCreatures_info, np.copy(world.resources()[0]), resourceMultiplier])
+            diffDeadCreatures_info = diffDeadCreatures_infoFunc(world.deadCreatures())
+            worldHistory.append([livingCreatures_info, diffDeadCreatures_info, np.copy(world.resources()[0]), resourceMultiplier])
         print 'Step %d complete. worldHistory in %s seconds. step in %s seconds.' % (step+1, time.time()-t2, t2-t1)
     # dump(worldHistory)
     print 'Time for %d steps: %s seconds' %(noSteps, time.time()-t0)
@@ -65,10 +69,8 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
 #Experiment funcs must have step and world as params
 
 def massExtinction(step, world):
-    if step == 100:
-        creatures = len(world.livingCreatures())
-        print creatures
-        world.livingCreatures_set(dict(world.livingCreatures().items()[int(creatures*0.9):]))
+    if step == 50:
+        world.livingCreatures().killProportion(0.9)
 
 def randomDeaths(step, world):
     if step == 100:
@@ -76,13 +78,13 @@ def randomDeaths(step, world):
 
 def increaseResources(step, world):
     multiplyFactor = 1.04
-    factor = 1.
     if step > 40 and step < 60:
         world.multiplyResources(multiplyFactor)
-        factor = multiplyFactor
-    return factor
+        return multiplyFactor
+    else:
+        return 1.
 
 def empty(step, world):
     pass
 
-RunSim(empty, noSteps=400, mapFile='MediumGrassAndShrubCyclicalConnectedIslands.tmx')
+RunSim(massExtinction, noSteps=100, mapFile='MediumGrassAndShrubCyclicalConnectedIslands.tmx')

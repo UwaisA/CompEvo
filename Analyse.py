@@ -49,7 +49,7 @@ def plotScatter3D(fig, subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y
 '''
 func must take in Creature numpy representation and return x, y value for plot
 '''
-def plotForCreatures(func, livingCreatures, fig, subplot, xlabel='x', ylabel='y', zlabel='z', title='', plotDendro=False):
+def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y', zlabel='z', title='', plotDendro=False):
     dims = len(func(livingCreatures[0]))
     creatSpec = findSpecies(livingCreatures, plotDendro)
     if np.max(creatSpec[:,1])==0:
@@ -61,7 +61,7 @@ def plotForCreatures(func, livingCreatures, fig, subplot, xlabel='x', ylabel='y'
         plotScatter3D(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], dataToPlot[:,2], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, title=title, colour=colors)
     elif dims == 2:
         dataToPlot = np.array(map(func, livingCreatures))
-        plotScatter(fig, subplot, dataToPlot[0], dataToPlot[1], xlabel=xlabel, ylabel=ylabel, title=title, colour=colors)
+        plotScatter(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], xlabel=xlabel, ylabel=ylabel, title=title, colour=colors)
 
 
 '''
