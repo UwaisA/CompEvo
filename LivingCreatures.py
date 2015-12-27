@@ -23,8 +23,7 @@ class LivingCreatures(Creatures):
             self.doubleCapacity()
             free = self.freeSpaces()
         #add creatures
-        for i, creat in enumerate(toBeAdded):
-            self._creatsArr[free[i]] = creat
+        self._creatsArr[free[:len(toBeAdded)]] = toBeAdded
     
     def addCreature(self, creatNo, posX=0, posY=0, E=6., N_o=2., T_r=10., Agg=0., Speed=4., MouthSize=5., Vis=1.):
         self.add(np.array([creatNo, posX, posY, E, N_o, T_r, Agg, Speed, MouthSize, Vis]))
@@ -83,15 +82,17 @@ class LivingCreatures(Creatures):
         mapDims = self.enviro().mapDims()
         dirDecisions = self.vDirDecision(self.gridPos()[:,0], self.gridPos()[:,1], self._creatsArr[:,7],
                         self._creatsArr[:,9].astype(int), self.costOfLiv(), mapDims[0], mapDims[1])
+        #add randomness to non-movers
         dirDecisions += np.array([np.all(dirDecisions==np.array([0,0]), axis=1)]).T*(1-(np.random.rand(self.capacity(),
-                        2)))*np.random.choice([-1, 1], size=(self.capacity(), 2)) #add randomness to non-movers
-        dirDecisions /= np.array([np.linalg.norm(dirDecisions, axis=1)]).T #unit vectorise
-        dirDecisions *= np.array([self._creatsArr[:,7]*3]).T #scale with speed
+                        2)))*np.random.choice([-1, 1], size=(self.capacity(), 2))
+        #unit vectorise
+        dirDecisions /= np.array([np.linalg.norm(dirDecisions, axis=1)]).T
+        #scale with speed
+        dirDecisions *= np.array([self._creatsArr[:,7]*3]).T
         self._creatsArr[:,1:3] += dirDecisions
         self._creatsArr[:,1:3] %= self.enviro().mapDims()*self.pxPerTile
     
     def vDirDecision(self, gridPosX, gridPosY, speed, vis, costOfLiv, mapW, mapH):
-        t0 = time.time()
         out = np.ndarray((len(gridPosX), 2), float)
         lims = np.ndarray((len(gridPosX), 6), int)
         lims[:,0] = gridPosX-vis
@@ -113,7 +114,6 @@ class LivingCreatures(Creatures):
                 maxLocs[i] = np.argmax(lookAtDist)
         out[:,0] = maxLocs/(2*vis+1) - vis
         out[:,1] = maxLocs%(2*vis+1) - vis
-        print 'vDirDec',time.time()-t0
         return out
     
     def allEat(self):

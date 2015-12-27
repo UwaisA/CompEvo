@@ -16,11 +16,16 @@ class DeadCreatures(Creatures):
         if len(toBeAdded.shape) == 1:
             toBeAdded = np.array([toBeAdded])
         assert toBeAdded[0].shape == self._creatsArr[0].shape, 'toBeAdded incorrect shape'
-        for creat in toBeAdded:
-            self._creatsArr[self.nextFreeSpace] = creat
-            self.nextFreeSpace += 1
-            if self.isFull():
-                self.doubleCapacity()
+        #ensure there's enough space
+        while self.capacity()-self.nextFreeSpace-len(toBeAdded) <= 0:
+            self.doubleCapacity()
+        self._creatsArr[self.nextFreeSpace:self.nextFreeSpace+len(toBeAdded)] = toBeAdded
+        self.nextFreeSpace += len(toBeAdded)
+        #for creat in toBeAdded:
+        #    self._creatsArr[self.nextFreeSpace] = creat
+        #    self.nextFreeSpace += 1
+        #    if self.isFull():
+        #        self.doubleCapacity()
     
     def isFull(self):
         return self.nextFreeSpace >= self.capacity()
@@ -33,3 +38,4 @@ class DeadCreatures(Creatures):
         toReturn[:self.diffDeadCreatsPos] = False
         toReturn[self.nextFreeSpace:] = False
         return self._creatsArr[toReturn]
+        #return self._creatsArr[self.diffDeadCreatsPos:self.nextFreeSpace]

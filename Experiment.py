@@ -42,7 +42,7 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
             livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
             diffDeadCreatures_info = diffDeadCreatures_infoFunc(world.deadCreatures())
             worldHistory.append([livingCreatures_info, diffDeadCreatures_info, np.copy(world.resources()[0]), resourceMultiplier])
-        print 'Step %d complete. worldHistory in %s seconds. step in %s seconds.' % (step+1, time.time()-t2, t2-t1)
+        print 'Step {0:.0f} complete. save: {1:.4f} secs. step: {2:.4f} secs.'.format(step+1, time.time()-t2, t2-t1)
     # dump(worldHistory)
     print 'Time for %d steps: %s seconds' %(noSteps, time.time()-t0)
 
@@ -73,7 +73,7 @@ def randomDeaths(step, world):
 
 def increaseResources(step, world):
     multiplyFactor = 1.04
-    if step > 40 and step < 60:
+    if step > 485 and step < 515:
         world.multiplyResources(multiplyFactor)
         return multiplyFactor
     else:
@@ -82,4 +82,4 @@ def increaseResources(step, world):
 def empty(step, world):
     pass
 
-RunSim(massExtinction, noSteps=1000, mapFile='Outdoors2.tmx')
+RunSim(empty, noSteps=1000, saveData=True, mapFile='Outdoors2.tmx')
