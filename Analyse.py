@@ -68,17 +68,14 @@ def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y'
 livingCreatures should be formatted as a numpy array as it is stored in worldHist
 '''
 def findSpecies(livingCreatures, plotDendro=False):
-    t0 = time.time()
     creatureNoList = livingCreatures[:,0]
     creatGens = np.array([livingCreatures[:,4:]])
     xCreat = np.repeat(creatGens, (len(creatGens[0])), axis=0)
     yCreat = xCreat.transpose((1,0,2))
     genDist = np.sqrt(np.sum((xCreat-yCreat)**2, axis=2))
-    t1 = time.time()
     nearestCreatArr = nsmall(genDist, 1, 0)
     specieRad = nsmall(nearestCreatArr, int(0.99*len(nearestCreatArr)+0.5)-1, 0)
     sameSpecies = genDist<=specieRad
-    t2 = time.time()
     creatSpec = np.ndarray((len(livingCreatures), 2), dtype=int)
     creatSpec[:,0] = creatureNoList
     creatSpec[:,1] = 0
