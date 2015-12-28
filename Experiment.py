@@ -82,4 +82,4 @@ def increaseResources(step, world):
 def empty(step, world):
     pass
 
-RunSim(empty, noSteps=1000, saveData=True, mapFile='Outdoors2.tmx')
+RunSim(empty, noSteps=1000, saveData=True, mapFile='MediumGrassAndShrubCyclicalIslands.tmx')

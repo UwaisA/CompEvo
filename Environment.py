@@ -137,7 +137,7 @@ class Environment(object):
         return resources
     
     def resources_grow(self):
-        self.resources()[0] += 2.2*self.resources()[1]*np.exp(-((self.resources()[0]/5. - 2.5)**2)) +0.3
+        self.resources()[0] += ((((self.resources()[0]**3.)*(np.exp(-(((self.resources()[0]/7.)-1.)**2.))))/500.)*self.resources()[1] + 0.3)
         self.resources()[0].clip(0, self.resources()[2], out=self.resources()[0]) #vals > max --> max
     
     def step(self):
@@ -286,8 +286,8 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 233, worldHistory[POI+5][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+6))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 234, worldHistory[POI+25][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+26))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 235, worldHistory[POI+50][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
-    Analyse.plotForCreatures(speedReprThreshMouth, 2, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+600))
-    #Analyse.plotForCreatures(speedReprThreshMouth, 3, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+600), True)
+    Analyse.plotForCreatures(speedReprThreshMouth, 2, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI))
+    #Analyse.plotForCreatures(speedReprThreshMouth, 3, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI), True)
     #Analyse.findSpecies(worldHistory[POI+599][0], True)
     plt.show()
 
