@@ -2,28 +2,29 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import time
+from scipy.cluster.hierarchy import dendrogram, linkage
 
 '''
 func must take in step then *funcargs as params
 '''
-def plotForSteps(func, subplot, maxSteps, funcName="func Name", colour='ro-', *funcargs):
-    xRes = np.arange(maxSteps)
-    yRes = np.zeros(maxSteps)
-    for i in xrange(maxSteps):
-        yRes[i] = func(i, *funcargs)
-    plot(subplot, xRes, yRes, colour=colour, xlabel="Step number", ylabel=funcName, title=funcName+" vs Time")
+def plotForSteps(func, fig, subplot, maxSteps, funcName="func Name", colour='ro-', stepInterval=1, *funcargs):
+    xRes = np.arange(0, maxSteps, stepInterval)
+    yRes = np.zeros(len(xRes))
+    for i, xi in enumerate(xRes):
+        yRes[i] = func(xi, *funcargs)
+    plot(fig, subplot, xRes, yRes, colour=colour, xlabel="Step number", ylabel=funcName, title=funcName+" vs Time")
 
 #draws a line graph using the parameters passed to it
-def plot(subplot, x, y, colour = 'ro-', xlabel = "x", ylabel = "y", title = "Title"):
-    plt.figure(1)
+def plot(fig, subplot, x, y, colour = 'ro-', xlabel = "x", ylabel = "y", title = "Title"):
+    plt.figure(fig)
     plt.subplot(subplot)
     plt.plot(x, y, colour)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
 
-def plotScatter(subplot, x, y, colour=None, xlabel="x", ylabel="y", title="Title"):
-    plt.figure(1)
+def plotScatter(fig, subplot, x, y, colour=None, xlabel="x", ylabel="y", title="Title"):
+    plt.figure(fig)
     plt.subplot(subplot)
     if colour==None:
         plt.scatter(x,y)
@@ -33,8 +34,8 @@ def plotScatter(subplot, x, y, colour=None, xlabel="x", ylabel="y", title="Title
     plt.ylabel(ylabel)
     plt.title(title)
 
-def plotScatter3D(subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y", zlabel="z", title="Title"):
-    fig = plt.figure(1)
+def plotScatter3D(fig, subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y", zlabel="z", title="Title"):
+    fig = plt.figure(fig)
     ax = fig.add_subplot(subplot, projection='3d')
     if colour==None:
         ax.scatter(x, y, z)
@@ -48,40 +49,33 @@ def plotScatter3D(subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y", zl
 '''
 func must take in Creature numpy representation and return x, y value for plot
 '''
-def plotForCreatures(func, livingCreatures, subplot, xlabel='x', ylabel='y', zlabel='z', title=''):
-    xRes = np.ndarray(len(livingCreatures))
-    yRes = np.ndarray(len(livingCreatures))
+def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y', zlabel='z', title='', plotDendro=False):
     dims = len(func(livingCreatures[0]))
-    creatSpec = findSpecies(livingCreatures)
+    creatSpec = findSpecies(livingCreatures, plotDendro)
     if np.max(creatSpec[:,1])==0:
         colors = np.array(creatSpec[:,1])
     else:
         colors = (np.array(creatSpec[:,1]))/float(np.max(creatSpec[:,1]))
     if dims == 3:
-        zRes = np.ndarray(len(livingCreatures))
-        for i in xrange(len(livingCreatures)):
-            xRes[i], yRes[i], zRes[i] = func(livingCreatures[i])
-        plotScatter3D(subplot, xRes, yRes, zRes, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, title=title, colour=colors)
+        dataToPlot = np.array(map(func, livingCreatures))
+        plotScatter3D(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], dataToPlot[:,2], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, title=title, colour=colors)
     elif dims == 2:
-        for i in xrange(len(livingCreatures)):
-            xRes[i], yRes[i] = func(livingCreatures[i])
-        plotScatter(subplot, xRes, yRes, xlabel=xlabel, ylabel=ylabel, title=title, colour=colors)
+        dataToPlot = np.array(map(func, livingCreatures))
+        plotScatter(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], xlabel=xlabel, ylabel=ylabel, title=title, colour=colors)
+
 
 '''
 livingCreatures should be formatted as a numpy array as it is stored in worldHist
 '''
-def findSpecies(livingCreatures):
-    t0 = time.time()
+def findSpecies(livingCreatures, plotDendro=False):
     creatureNoList = livingCreatures[:,0]
     creatGens = np.array([livingCreatures[:,4:]])
     xCreat = np.repeat(creatGens, (len(creatGens[0])), axis=0)
     yCreat = xCreat.transpose((1,0,2))
-    genDistSqr = np.sum((xCreat-yCreat)**2, axis=2)
-    t1 = time.time()
-    nearestCreatArr = nsmall(genDistSqr, 1, 0)
+    genDist = np.sqrt(np.sum((xCreat-yCreat)**2, axis=2))
+    nearestCreatArr = nsmall(genDist, 1, 0)
     specieRad = nsmall(nearestCreatArr, int(0.99*len(nearestCreatArr)+0.5)-1, 0)
-    sameSpecies = genDistSqr<=specieRad
-    t2 = time.time()
+    sameSpecies = genDist<=specieRad
     creatSpec = np.ndarray((len(livingCreatures), 2), dtype=int)
     creatSpec[:,0] = creatureNoList
     creatSpec[:,1] = 0
@@ -89,7 +83,6 @@ def findSpecies(livingCreatures):
     argsToBeAnalysed = set(np.arange(len(livingCreatures))) #creature args yet to merged
     curSpec = 0
     while len(argsToBeAnalysed) > 0: #one iteration for each species
-        curSpec += 1
         newToBeAnalysed = set([argsToBeAnalysed.pop()])
         while len(newToBeAnalysed) > 0:
             for nextVal in newToBeAnalysed: #just for getting a value from set
@@ -99,17 +92,38 @@ def findSpecies(livingCreatures):
                 creatSpec[nextVal][1] = curSpec
                 newToBeAnalysed.remove(nextVal)
                 break
-    print 'total',time.time()-t0,'newTripleFor',time.time()-t2,'len liv creat',len(livingCreatures)
-    print np.max(creatSpec[:,1])+1
+        curSpec += 1
+    species = int(np.max(creatSpec[:,1])+1)
+    print 'creatures:',len(livingCreatures), 'species:', species
+    if plotDendro:
+        creatSpec[:,1] = dendro(genDist, species)
+    #specCreats = {}
+    #specPops = {}
+    #for creat in creatSpec:
+    #    specCreats[creat[1]] = specCreats.get(creat[1], []) + [creat[0]]
+    #    specPops[creat[1]] = specPops.get(creat[1], 0)+1
+    #print specPops
     return creatSpec
 
-def genList(livingCreatures, creat1, creat2):
-    if (creat1 - creat2) > 0:
-        return genDistSqrCalc(livingCreatures[creat1][4:], livingCreatures[creat2][4:])
-    return 0
-
-def genDistSqrCalc(gen1, gen2):
-    return np.sum((gen1-gen2)**2)
+def dendro(genDist, species):
+    '''
+    Returns second column of creatSpec
+    '''
+    plt.figure()
+    dend = dendrogram(linkage(genDist), p=species, truncate_mode='lastp', count_sort=True)
+    dendFull = dendrogram(linkage(genDist), count_sort=True, no_plot=True)
+    specCreats1 = []
+    for i in dend['ivl']:
+        if i.count('(') == 0:
+            specCreats1.append([int(i)])
+        else:
+            specCreats1.append(dendFull['ivl'][sum(map(len,specCreats1)):sum(map(len,specCreats1))+int(i[1:-1])])
+    
+    creatSpec = np.ndarray((len(genDist)), dtype=int)
+    for specNo, specMembers in enumerate(specCreats1):
+        for specMember in specMembers:
+            creatSpec[int(specMember)] = specNo
+    return creatSpec
 
 def nsmall(arr, n, axis):
     return np.partition(arr, n, axis)[n]

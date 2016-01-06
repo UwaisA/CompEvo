@@ -1,7 +1,8 @@
 import numpy as np
 import pygame
 import sys
-from Creature import Creature
+from DeadCreatures import DeadCreatures
+from LivingCreatures import LivingCreatures
 import time
 from Graphics import Graphics
 import Analyse
@@ -23,19 +24,6 @@ class Environment(object):
     # Initialises Environment
     def __init__(self, natVar=0.3, mapFile = "isometric_grass_and_water2.tmx", randomDeaths=0.):
         self.randomDeaths = randomDeaths
-        self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([500,2700])),
-                                  2: Creature(creatureNo=2, environment=self, pos=np.array([1600,1700])),
-                                  3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420])),
-                                  4: Creature(creatureNo=4, environment=self, pos=np.array([550,550])),
-                                  5: Creature(creatureNo=5, environment=self, pos=np.array([560,540])),
-                                  6: Creature(creatureNo=6, environment=self, pos=np.array([400,2650])),
-                                  7: Creature(creatureNo=7, environment=self, pos=np.array([2500,450])),
-                                  8: Creature(creatureNo=8, environment=self, pos=np.array([1550,1650])),
-                                  9: Creature(creatureNo=9, environment=self, pos=np.array([1250,1850])),
-                                  10: Creature(creatureNo=10, environment=self, pos=np.array([1150,2050])),
-                                  11: Creature(creatureNo=11, environment=self, pos=np.array([750,2450])),
-                                  }
-        self.__deadCreatures = {}
         self.mapFile = mapFile #This is the filename of the map to be used for the display of this simulation
         mydir = os.path.dirname(os.path.realpath(__file__))
         subdir = 'Maps'
@@ -43,8 +31,6 @@ class Environment(object):
         tmxdata = TiledMap(mapfilepath)
         self.__mapW = int(tmxdata.properties['Width'])
         self.__mapH = int(tmxdata.properties['Width'])
-        self.__maxCreatureNo = len(self.livingCreatures())+ len(self.deadCreatures())
-        self.__diffDeadCreatures = {}
         self.__resources = self.resources_add(propWithRes=0.4)
         # self.__resources = {'[5 6]': Food(self, E=10., pos=np.array([5,6]), growRate=1.),
         #                   '[ 9 21]': Food(self, E=15., pos=np.array([9,21]), growRate=1.3),
@@ -59,17 +45,25 @@ class Environment(object):
         #                   '[ 8 19]': Food(self, E=15., pos=np.array([8,19]), growRate=1.3),
         #                   '[3 4]': Food(self, E=9., pos=np.array([3,4]), growRate=1.7)}
         self.__natVar = natVar
-        print self.__livingCreatures
+        
+        self.__dCreats = DeadCreatures(self)
+        self.__lCreats = LivingCreatures(self, self.__dCreats)
+        self.__lCreats.addCreature(1, 30*32, 20*32)
+        self.__lCreats.addCreature(2, 30*32, 30*32)
+        self.__lCreats.addCreature(3, 30*32, 10*32)
+        self.__lCreats.addCreature(4, 7*32, 19*32)
+        self.__maxCreatureNo = self.__lCreats.creatures() + self.__dCreats.creatures()
+        print self.__lCreats
 
     def __repr__(self):
-        return ("Living Creatures: %s" % (self.livingCreatures()) +
-                "Dead Creatures: %s" % (self.deadCreatures()) +
-                "Resources: %s" % (self.resources()))
+        return ("Living Creatures: %s\n" % (self.livingCreatures()) +
+                "Dead Creatures: %s\n" % (self.deadCreatures()) +
+                "Resources: %s\n" % (self.resources()))
 
     def __str__(self):
-        return ("natVar=%s"%(self.natVar) +
-                "Living Creatures: %s" % (self.livingCreatures()) +
-                "Dead Creatures: %s" % (self.deadCreatures()) +
+        return ("natVar=%s\n"%(self.natVar) +
+                "Living Creatures: %s\n" % (self.livingCreatures()) +
+                "Dead Creatures: %s\n" % (self.deadCreatures()) +
                 "Resources: %s" % (self.resources()))
                 
     def mapDims(self):
@@ -79,31 +73,31 @@ class Environment(object):
         return self.__maxCreatureNo
     
     def livingCreatures(self):
-        return self.__livingCreatures
+        return self.__lCreats
 
-    def livingCreatures_pop(self, creatureNo):
-        return self.__livingCreatures.pop(creatureNo)
+    #def livingCreatures_pop(self, creatureNo):
+    #    return self.__livingCreatures.pop(creatureNo)
 
-    def livingCreatures_add(self, creature):
-        self.__livingCreatures[creature.creatureNo()] = creature
-        self.__maxCreatureNo = max(creature.creatureNo(), self.maxCreatureNo())
+    #def livingCreatures_add(self, creature):
+    #    self.__lCreats.add[creature.creatureNo()] = creature
+    #    self.__maxCreatureNo = max(creature.creatureNo(), self.maxCreatureNo())
     
-    def livingCreatures_set(self, newLivingCreatures):
-        assert isinstance(newLivingCreatures, dict), 'newLivingCreatures is not a dict'
-        self.__livingCreatures = newLivingCreatures
+    #def livingCreatures_set(self, newLivingCreatures):
+    #    assert isinstance(newLivingCreatures, dict), 'newLivingCreatures is not a dict'
+    #    self.__livingCreatures = newLivingCreatures
         
     def deadCreatures(self):
-        return self.__deadCreatures
+        return self.__dCreats
     
     def clearTempDeadCreatures(self):
-        self.__diffDeadCreatures.clear()
+        self.__dCreats.clearDiffDeadCreats()
     
     def diffDeadCreatures(self):
-        return self.__diffDeadCreatures
+        return self.__dCreats.diffDeadCreats()
 
-    def deadCreatures_add(self, creature):
-        self.__deadCreatures[creature.creatureNo()] = creature
-        self.__diffDeadCreatures[creature.creatureNo()] = creature
+    #def deadCreatures_add(self, creature):
+    #    self.__deadCreatures[creature.creatureNo()] = creature
+    #    self.__diffDeadCreatures[creature.creatureNo()] = creature
 
     def resources(self):
         return self.__resources
@@ -148,10 +142,9 @@ class Environment(object):
     
     def step(self):
         self.resources_grow()
-        for creature in self.__livingCreatures.values():
-            creature.step()
-        if np.all(self.resources()[:,45:99,0:53][0] > self.resources()[:,45:99,0:53][2]*0.95):
-            print 'STOP!!!!!!!!!!!!!!!!!!'
+        self.__lCreats.allStep()
+        #for creature in self.__livingCreatures.values():
+        #    creature.step()
         
 # ACTUAL TEST_________________________________________________________________
 def LiveTesting(mapFile = None):
@@ -212,10 +205,7 @@ def LiveTestingNoConfirm(mapFile = None):
     sys.exit()
 
 def livingCreatures_infoFunc(livingCreatures):
-    livingCreatures_info = np.zeros((len(livingCreatures), 10))
-    for i, creature in enumerate(livingCreatures.itervalues()):
-        livingCreatures_info[i] = np.array([creature.creatureNo(), creature.pos()[0], creature.pos()[1], creature.physChar()['energy'], creature.gen()['NumOff'], creature.gen()['ReprThresh'], creature.gen()['Aggr'], creature.gen()['Speed'], creature.gen()['MouthSize'], creature.gen()['Vis']])
-    return livingCreatures_info
+    return livingCreatures.allCreats()
 
 #def deadCreatures_infoFunc(deadCreatures, temp_deadCreatures):
 #    diff_deadCreatures = [(k, v) for k, v in deadCreatures.iteritems() if k not in temp_deadCreatures]
@@ -224,11 +214,8 @@ def livingCreatures_infoFunc(livingCreatures):
 #        deadCreatures_info[i] = np.array([diff_deadCreatures[i][1].creatureNo(), diff_deadCreatures[i][1].pos()[0], diff_deadCreatures[i][1].pos()[1]])
 #    return deadCreatures_info
     
-def deadCreatures_infoFunc(diff_deadCreatures):
-    deadCreatures_info = np.zeros((len(diff_deadCreatures), 3))
-    for i, creature in enumerate(diff_deadCreatures.itervalues()):
-        deadCreatures_info[i] = np.array([creature.creatureNo(), creature.pos()[0], creature.pos()[1]])
-    return deadCreatures_info
+def diffDeadCreatures_infoFunc(deadCreatures):
+    return deadCreatures.diffDeadCreats()
 
 def totPop(step, worldHistory):
     return len(worldHistory[step][0])
@@ -254,6 +241,17 @@ def avgVis(step, worldHistory):
         return 0
     return float(totVis)/totPop(step, worldHistory)
 
+def biodiversity(step, worldHistory):
+    '''Simpson's definition of diversity:
+    1 - (probability of two randomly chosen items being in the same group)
+    '''
+    creatSpec = Analyse.findSpecies(worldHistory[step][0])
+    specPops = {}
+    for creat in creatSpec:
+        specPops[creat[1]] = specPops.get(creat[1], 0)+1
+    arr = np.array(specPops.values(), dtype=float)
+    return 1- (np.sum(arr*(arr-1))/(np.sum(arr)*(np.sum(arr)-1)))
+
 def speedVis(creature):
     return creature[7], creature[9]
 
@@ -276,18 +274,21 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     for step in xrange(len(worldHistory)):
         popForStep[step] = totPop(step, worldHistory)
 
-    POI = 400 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
-    Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
-    Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
-    Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
-    Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
-    # Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
-    # Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI-51][0], 231, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI-50))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI-1][0], 233, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI))
-    # Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+49][0], 233, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+50))
-    # Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+99][0], 234, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+100))
-    # Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+299][0], 235, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+300))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+599][0], 236, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+600))
+    POI = np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
+    Analyse.plotForSteps(avgSpeed, 1, 231, len(worldHistory), "Avg Speed", 'ro-', 1, (worldHistory))
+    Analyse.plotForSteps(totPop, 1, 232, len(worldHistory), "Population", 'bo-', 1, (worldHistory))
+    #Analyse.plotForCreatures(speedVis, 1, 233, worldHistory[POI][0], 'Speed', 'Vis', 'Speed vs Vision in 914th step')
+    Analyse.plotForSteps(avgVis, 1, 234, len(worldHistory), "Avg Vis", 'go-', 1, (worldHistory))
+    Analyse.plotForSteps(totERes, 1, 235, len(worldHistory), "Resource Energy", 'yo-', 1, (worldHistory))
+    Analyse.plotForSteps(biodiversity, 1, 236, len(worldHistory), "Biodiversity", 'bo-', 20, (worldHistory))
+    #Analyse.plotForCreatures(speedReprThreshMouth, 2, 231, worldHistory[POI-5][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI-4))
+    #Analyse.plotForCreatures(speedReprThreshMouth, 2, 232, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+1))
+    #Analyse.plotForCreatures(speedReprThreshMouth, 2, 233, worldHistory[POI+5][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+6))
+    #Analyse.plotForCreatures(speedReprThreshMouth, 2, 234, worldHistory[POI+25][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+26))
+    #Analyse.plotForCreatures(speedReprThreshMouth, 2, 235, worldHistory[POI+50][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
+    Analyse.plotForCreatures(speedReprThreshMouth, 2, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI))
+    #Analyse.plotForCreatures(speedReprThreshMouth, 3, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI), True)
+    #Analyse.findSpecies(worldHistory[POI+599][0], True)
 
     plt.show()
 
@@ -297,7 +298,7 @@ def DisplayFrame(worldFrame, resourcesGRMaxE, mapFile, frameNo):
         colours = np.array(creatSpec[:,1])
     else:
         colours = (np.array(creatSpec[:,1]))/float(np.max(creatSpec[:,1]))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldFrame[0], 111, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(frameNo+1))
+    Analyse.plotForCreatures(speedReprThreshMouth, 1, 111, worldFrame[0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(frameNo+1))
 
     plt.show()
 
