@@ -23,10 +23,18 @@ class Environment(object):
     # Initialises Environment
     def __init__(self, natVar=0.3, mapFile = "isometric_grass_and_water2.tmx", randomDeaths=0.):
         self.randomDeaths = randomDeaths
-        self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([100,2900])),
+        self.__livingCreatures = {1: Creature(creatureNo=1, environment=self, pos=np.array([500,2700])),
                                   2: Creature(creatureNo=2, environment=self, pos=np.array([1600,1700])),
                                   3: Creature(creatureNo=3, environment=self, pos=np.array([2600,420])),
-                                  4: Creature(creatureNo=4, environment=self, pos=np.array([550,550]))}
+                                  4: Creature(creatureNo=4, environment=self, pos=np.array([550,550])),
+                                  5: Creature(creatureNo=5, environment=self, pos=np.array([560,540])),
+                                  6: Creature(creatureNo=6, environment=self, pos=np.array([400,2650])),
+                                  7: Creature(creatureNo=7, environment=self, pos=np.array([2500,450])),
+                                  8: Creature(creatureNo=8, environment=self, pos=np.array([1550,1650])),
+                                  9: Creature(creatureNo=9, environment=self, pos=np.array([1250,1850])),
+                                  10: Creature(creatureNo=10, environment=self, pos=np.array([1150,2050])),
+                                  11: Creature(creatureNo=11, environment=self, pos=np.array([750,2450])),
+                                  }
         self.__deadCreatures = {}
         self.mapFile = mapFile #This is the filename of the map to be used for the display of this simulation
         mydir = os.path.dirname(os.path.realpath(__file__))
@@ -131,7 +139,7 @@ class Environment(object):
             resKiller[resKiller > propWithRes] = 1
             resKiller[resKiller <= propWithRes] = 0
             resKiller = 1 - resKiller
-        resources *= resKiller*0.85
+        resources *= resKiller*0.75
         return resources
     
     def resources_grow(self):
@@ -142,6 +150,8 @@ class Environment(object):
         self.resources_grow()
         for creature in self.__livingCreatures.values():
             creature.step()
+        if np.all(self.resources()[:,45:99,0:53][0] > self.resources()[:,45:99,0:53][2]*0.95):
+            print 'STOP!!!!!!!!!!!!!!!!!!'
         
 # ACTUAL TEST_________________________________________________________________
 def LiveTesting(mapFile = None):
@@ -267,17 +277,17 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
         popForStep[step] = totPop(step, worldHistory)
 
     POI = 400 #np.clip(np.argmax(popForStep), 10, len(worldHistory)-16)
-    # Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
-    # Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
-    # Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
-    # Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
+    Analyse.plotForSteps(avgSpeed, 231, len(worldHistory), "Avg Speed", 'ro-', (worldHistory))
+    Analyse.plotForSteps(totPop, 232, len(worldHistory), "Population", 'bo-', (worldHistory))
+    Analyse.plotForSteps(avgVis, 234, len(worldHistory), "Avg Vis", 'go-', (worldHistory))
+    Analyse.plotForSteps(totERes, 235, len(worldHistory), "Resource Energy", 'yo-', (worldHistory))
     # Analyse.plotForCreatures(speedVis, worldHistory[915][0], 233, 'Speed', 'Vis', 'Speed vs Vision in 914th step')
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI-5][0], 231, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI-4))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI][0], 232, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+1))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+5][0], 233, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+6))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+50][0], 234, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+100][0], 235, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+101))
-    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+200][0], 236, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+201))
+    # Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI-51][0], 231, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI-50))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI-1][0], 233, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI))
+    # Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+49][0], 233, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+50))
+    # Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+99][0], 234, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+100))
+    # Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+299][0], 235, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+300))
+    Analyse.plotForCreatures(speedReprThreshMouth, worldHistory[POI+599][0], 236, 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+600))
 
     plt.show()
 

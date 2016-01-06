@@ -6,7 +6,7 @@ import os
 import cPickle as pickle
 import random
 
-def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
+def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, randomDeaths=0.):
     '''Produces nested output list with format:
     [[time0], [time1], [time2],..., [timeEnd]]
     Where each [time] is [livingCreatures, deadCreatures, resources]
@@ -16,9 +16,9 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
     '''
     t0 = time.time()
     if mapFile is not None:
-        world = Environment(mapFile=mapFile)
+        world = Environment(mapFile=mapFile, randomDeaths=randomDeaths)
     else:
-        world = Environment()
+        world = Environment(randomDeaths=randomDeaths)
     resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
     deadCreatures_info = deadCreatures_infoFunc({})
@@ -30,7 +30,7 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None):
             break
         else:
             if experimentFunc is not None:
-                if experimentFunc == increaseResources:
+                if experimentFunc == increaseResources or experimentFunc == allExp:
                     resourceMultiplier = experimentFunc(step, world)
                 else:
                     experimentFunc(step, world)
@@ -71,15 +71,37 @@ def massExtinction(step, world):
         world.livingCreatures_set(dict(world.livingCreatures().items()[int(creatures*0.9):]))
 
 def randomDeaths(step, world):
-    if step == 100:
+    if step == 400:
         world.randomDeaths = 0.
 
 def increaseResources(step, world):
     multiplyFactor = 1.04
     factor = 1.
-    if step > 40 and step < 60:
+    if step > 390 and step < 410:
         world.multiplyResources(multiplyFactor)
         factor = multiplyFactor
     return factor
 
-RunSim(increaseResources, noSteps=100)
+def allExp(step, world):
+    if step == 250:
+        world.randomDeaths = 0.
+    increaseFactor1 = 1.04
+    increaseFactor2 = 1.08
+    reduceFactor = 0.85
+    factor = 1.
+    if step > 350 and step < 370:
+        world.multiplyResources(increaseFactor1)
+        factor = increaseFactor1
+    if step > 446 and step < 454:
+        world.multiplyResources(reduceFactor)
+        factor = reduceFactor
+    if step > 470 and step < 490:
+        world.multiplyResources(increaseFactor2)
+        factor = increaseFactor2
+    if step == 450:
+        creatures = len(world.livingCreatures())
+        print creatures
+        world.livingCreatures_set(dict(world.livingCreatures().items()[int(creatures*0.9):]))
+    return factor
+
+RunSim(noSteps=400, mapFile="MediumIslands.tmx")
