@@ -97,6 +97,7 @@ def findSpecies(livingCreatures, plotDendro=False):
     print 'creatures:',len(livingCreatures), 'species:', species
     if plotDendro:
         creatSpec[:,1] = dendro(genDist, species)
+    print creatSpec
     #specCreats = {}
     #specPops = {}
     #for creat in creatSpec:
@@ -105,13 +106,14 @@ def findSpecies(livingCreatures, plotDendro=False):
     #print specPops
     return creatSpec
 
-def dendro(genDist, species):
+def dendro(genDist, species, plotDendro):
     '''
     Returns second column of creatSpec
     '''
     plt.figure()
-    dend = dendrogram(linkage(genDist), p=species, truncate_mode='lastp', count_sort=True)
-    dendFull = dendrogram(linkage(genDist), count_sort=True, no_plot=True)
+    linkArr = linkage(genDist)
+    dend = dendrogram(linkArr, p=species, truncate_mode='lastp', count_sort=True, no_plot=(not plotDendro))
+    dendFull = dendrogram(linkArr, count_sort=True, no_plot=True)
     specCreats1 = []
     for i in dend['ivl']:
         if i.count('(') == 0:

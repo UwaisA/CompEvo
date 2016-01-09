@@ -72,6 +72,9 @@ class Environment(object):
     def maxCreatureNo(self):
         return self.__maxCreatureNo
     
+    def setMaxCreatureNo(self, newMaxCreatNo):
+        self.__maxCreatureNo = newMaxCreatNo
+    
     def livingCreatures(self):
         return self.__lCreats
 

@@ -137,6 +137,7 @@ class LivingCreatures(Creatures):
             repros = np.copy(self._creatsArr[reproducing])
             repros[:,3] /= repros[:,4]
             repros = np.repeat(repros, repros[:,4].astype(int), axis=0)
+            self.enviro().setMaxCreatureNo(self.enviro().maxCreatureNo()+len(repros))
             repros[:,0] = np.arange(self.enviro().maxCreatureNo()+1, self.enviro().maxCreatureNo()+1+len(repros))
             genVar = ((np.random.rand(len(repros), len(repros[0])-4)*2*natVar)-natVar)*np.array([0,1,0,1,1,1])
             repros[:,4:] += genVar
