@@ -49,16 +49,16 @@ def plotScatter3D(fig, subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y
 '''
 func must take in Creature numpy representation and return x, y value for plot
 '''
-def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y', zlabel='z', title='', plotDendro=False):
+def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y', zlabel='z', title='', plotDendro=False, withAnomCorr=True):
     dims = len(func(livingCreatures[0]))
-    creatSpec = findSpecies(livingCreatures, plotDendro)
+    creatSpec = findSpecies(livingCreatures, plotDendro, withAnomCorr)
     if np.max(creatSpec[:,1])==0:
         colors = np.array(creatSpec[:,1])
     else:
         colors = (np.array(creatSpec[:,1]))/float(np.max(creatSpec[:,1]))
     if dims == 3:
         dataToPlot = np.array(map(func, livingCreatures))
-        plotScatter3D(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], dataToPlot[:,2], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, title=title, colour=colors)
+        plotScatter3D(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], dataToPlot[:,2], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, title=title)#, colour=colors)
     elif dims == 2:
         dataToPlot = np.array(map(func, livingCreatures))
         plotScatter(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], xlabel=xlabel, ylabel=ylabel, title=title, colour=colors)
@@ -67,7 +67,7 @@ def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y'
 '''
 livingCreatures should be formatted as a numpy array as it is stored in worldHist
 '''
-def findSpecies(livingCreatures, plotDendro=False):
+def findSpecies(livingCreatures, plotDendro=False, withAnomCorr=True):
     creatureNoList = livingCreatures[:,0]
     creatGens = np.array([livingCreatures[:,4:]])
     xCreat = np.repeat(creatGens, (len(creatGens[0])), axis=0)
@@ -93,16 +93,30 @@ def findSpecies(livingCreatures, plotDendro=False):
                 newToBeAnalysed.remove(nextVal)
                 break
         curSpec += 1
-    species = int(np.max(creatSpec[:,1])+1)
-    print 'creatures:',len(livingCreatures), 'species:', species
+    species = len(set(creatSpec[:,1]))
     if plotDendro:
         creatSpec[:,1] = dendro(genDist, species)
-    print creatSpec
+    #print creatSpec
     #specCreats = {}
-    #specPops = {}
-    #for creat in creatSpec:
-    #    specCreats[creat[1]] = specCreats.get(creat[1], []) + [creat[0]]
-    #    specPops[creat[1]] = specPops.get(creat[1], 0)+1
+    if withAnomCorr:
+        specPops = {}
+        for creat in creatSpec:
+            #specCreats[creat[1]] = specCreats.get(creat[1], []) + [creat[0]]
+            specPops[creat[1]] = specPops.get(creat[1], 0)+1
+        #anomaly fixing
+        invalidSpecs = set()
+        for spec in specPops.keys():
+            if specPops[spec] < 0.005*len(creatSpec):
+                invalidSpecs.add(spec)
+        invalidCreats = np.argwhere(np.in1d(creatSpec[:,1], list(invalidSpecs))).flatten()
+        for invalid in invalidCreats:
+            for i in xrange(1, len(creatSpec)): #  xrange(1,...) to avoid self-selection
+                argNearbyCreat = np.argwhere(genDist[invalid]==nsmall(genDist[invalid], i, 0)).flat[0]
+                if not argNearbyCreat in invalidCreats:
+                    creatSpec[invalid][1] = creatSpec[argNearbyCreat][1]
+                    break
+    species = len(set(creatSpec[:,1]))
+    print 'creatures:',len(livingCreatures), 'species:', species
     #print specPops
     return creatSpec
 

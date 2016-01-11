@@ -15,9 +15,9 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, rand
     '''
     t0 = time.time()
     if mapFile is not None:
-        world = Environment(mapFile=mapFile, randomDeaths=randomDeaths)
+        world = Environment(natVar=0.1, mapFile=mapFile, randomDeaths=randomDeaths)
     else:
-        world = Environment(randomDeaths=randomDeaths)
+        world = Environment(natVar=0.1, randomDeaths=randomDeaths)
     resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
     diffDeadCreatures_info = diffDeadCreatures_infoFunc(world.deadCreatures())
@@ -64,7 +64,7 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, rand
 #Experiment funcs must have step and world as params
 
 def massExtinction(step, world):
-    if step == 500:
+    if step == 700:
         world.livingCreatures().killProportion(0.9)
 
 def randomDeaths(step, world):
@@ -102,4 +102,4 @@ def allExp(step, world):
         world.livingCreatures().killProportion(0.9)
     return factor
 
-RunSim(empty, noSteps=1000, saveData=True, mapFile='MediumGrassAndShrubCyclicalIslands.tmx')
+RunSim(massExtinction, noSteps=1000, saveData=True, mapFile='Outdoors2.tmx')
