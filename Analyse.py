@@ -58,7 +58,7 @@ def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y'
         colors = (np.array(creatSpec[:,1]))/float(np.max(creatSpec[:,1]))
     if dims == 3:
         dataToPlot = np.array(map(func, livingCreatures))
-        plotScatter3D(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], dataToPlot[:,2], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, title=title)#, colour=colors)
+        plotScatter3D(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], dataToPlot[:,2], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, title=title, colour=colors)
     elif dims == 2:
         dataToPlot = np.array(map(func, livingCreatures))
         plotScatter(fig, subplot, dataToPlot[:,0], dataToPlot[:,1], xlabel=xlabel, ylabel=ylabel, title=title, colour=colors)
