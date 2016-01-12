@@ -54,7 +54,7 @@ class LivingCreatures(Creatures):
     
     def costOfLiv(self):
         # energy, aggr, speed, vision - non-zero vals
-        return np.sum(self._creatsArr*np.array([0,0,0,1/12.,0,0,0.5,0.25,0,1/6.]), axis=1)
+        return np.sum(self._creatsArr*np.array([0,0,0,1/12.,0,0,0.5,0.25,0,0]), axis=1)
     
     def killProportion(self, propToDie):
         toDie = np.argwhere(self._creatsArr[:,0] > 0).flatten()
@@ -103,7 +103,6 @@ class LivingCreatures(Creatures):
         lims[:,5] = -lims[:,2]
         lims = np.clip(lims, [0,0,0,0,0,0], [mapW, mapW, mapH, mapH, mapW+1, mapH+1])
         speedFactorMult = self.pxPerTile/(speed*3)*costOfLiv
-        maxLocs = np.zeros(len(gridPosX), int)
         res0 = self.enviro().resources()[0]
         creatExists = self._creatsArr[:,0]>0
         for i in xrange(len(gridPosX)):
@@ -111,9 +110,19 @@ class LivingCreatures(Creatures):
                 toLookAt = res0[lims[i,0]:lims[i,1], lims[i,2]:lims[i,3]]
                 lookAtDist = distFactor(2*vis[i]+1)*speedFactorMult[i]
                 addAtPos(lookAtDist, toLookAt, lims[i,4:6])
-                maxLocs[i] = np.argmax(lookAtDist)
-        out[:,0] = maxLocs/(2*vis+1) - vis
-        out[:,1] = maxLocs%(2*vis+1) - vis
+                randRot = np.random.rand(2) > .5
+                if randRot[0]:
+                    lookAtDist = np.flipud(lookAtDist)
+                if randRot[1]:
+                    lookAtDist = np.fliplr(lookAtDist)
+                maxDir = np.argmax(lookAtDist)
+                maxDir0, maxDir1 = maxDir/(2*vis[i]+1) - vis[i], maxDir%(2*vis[i]+1) - vis[i]
+                if randRot[0]:
+                    maxDir0 = 2*vis[i]-maxDir0
+                if randRot[1]:
+                    maxDir1 = 2*vis[i]-maxDir1
+                out[i,0] = maxDir0
+                out[i,1] = maxDir1
         return out
     
     def allEat(self):

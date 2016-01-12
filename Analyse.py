@@ -95,7 +95,7 @@ def findSpecies(livingCreatures, plotDendro=False, withAnomCorr=True):
         curSpec += 1
     species = len(set(creatSpec[:,1]))
     if plotDendro:
-        creatSpec[:,1] = dendro(genDist, species)
+        creatSpec[:,1] = dendro(genDist, species, plotDendro)
     #print creatSpec
     #specCreats = {}
     if withAnomCorr:
@@ -106,7 +106,7 @@ def findSpecies(livingCreatures, plotDendro=False, withAnomCorr=True):
         #anomaly fixing
         invalidSpecs = set()
         for spec in specPops.keys():
-            if specPops[spec] < 0.005*len(creatSpec):
+            if specPops[spec] < 0.01*len(creatSpec):
                 invalidSpecs.add(spec)
         invalidCreats = np.argwhere(np.in1d(creatSpec[:,1], list(invalidSpecs))).flatten()
         for invalid in invalidCreats:
