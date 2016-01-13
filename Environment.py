@@ -77,17 +77,6 @@ class Environment(object):
     
     def livingCreatures(self):
         return self.__lCreats
-
-    #def livingCreatures_pop(self, creatureNo):
-    #    return self.__livingCreatures.pop(creatureNo)
-
-    #def livingCreatures_add(self, creature):
-    #    self.__lCreats.add[creature.creatureNo()] = creature
-    #    self.__maxCreatureNo = max(creature.creatureNo(), self.maxCreatureNo())
-    
-    #def livingCreatures_set(self, newLivingCreatures):
-    #    assert isinstance(newLivingCreatures, dict), 'newLivingCreatures is not a dict'
-    #    self.__livingCreatures = newLivingCreatures
         
     def deadCreatures(self):
         return self.__dCreats
@@ -97,11 +86,7 @@ class Environment(object):
     
     def diffDeadCreatures(self):
         return self.__dCreats.diffDeadCreats()
-
-    #def deadCreatures_add(self, creature):
-    #    self.__deadCreatures[creature.creatureNo()] = creature
-    #    self.__diffDeadCreatures[creature.creatureNo()] = creature
-
+        
     def resources(self):
         return self.__resources
     
@@ -136,7 +121,7 @@ class Environment(object):
             resKiller[resKiller > propWithRes] = 1
             resKiller[resKiller <= propWithRes] = 0
             resKiller = 1 - resKiller
-        resources *= resKiller*0.6
+        resources *= resKiller*0.75
         return resources
     
     def resources_grow(self):
@@ -146,8 +131,6 @@ class Environment(object):
     def step(self):
         self.resources_grow()
         self.__lCreats.allStep()
-        #for creature in self.__livingCreatures.values():
-        #    creature.step()
         
 # ACTUAL TEST_________________________________________________________________
 def LiveTesting(mapFile = None):
@@ -209,13 +192,6 @@ def LiveTestingNoConfirm(mapFile = None):
 
 def livingCreatures_infoFunc(livingCreatures):
     return livingCreatures.allCreats()
-
-#def deadCreatures_infoFunc(deadCreatures, temp_deadCreatures):
-#    diff_deadCreatures = [(k, v) for k, v in deadCreatures.iteritems() if k not in temp_deadCreatures]
-#    deadCreatures_info = np.zeros((len(diff_deadCreatures), 3))
-#    for i in xrange(len(diff_deadCreatures)):
-#        deadCreatures_info[i] = np.array([diff_deadCreatures[i][1].creatureNo(), diff_deadCreatures[i][1].pos()[0], diff_deadCreatures[i][1].pos()[1]])
-#    return deadCreatures_info
     
 def diffDeadCreatures_infoFunc(deadCreatures):
     return deadCreatures.diffDeadCreats()
@@ -289,8 +265,8 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 233, worldHistory[POI+5][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+6))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 234, worldHistory[POI+25][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+26))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 235, worldHistory[POI+50][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
-    Analyse.plotForCreatures(speedReprThreshMouth, 2, 121, worldHistory[899][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI))
-    Analyse.plotForCreatures(speedReprThreshMouth, 2, 122, worldHistory[719][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI), True)
+    Analyse.plotForCreatures(speedReprThreshMouth, 2, 121, worldHistory[359][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(360))
+    Analyse.plotForCreatures(speedReprThreshMouth, 2, 122, worldHistory[949][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(950))
     #Analyse.plotForCreatures(speedReprThreshMouth, 3, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI), True)
     #Analyse.findSpecies(worldHistory[POI+599][0], True)
 

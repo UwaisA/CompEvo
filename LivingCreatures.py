@@ -54,7 +54,7 @@ class LivingCreatures(Creatures):
     
     def costOfLiv(self):
         # energy, aggr, speed, vision - non-zero vals
-        return np.sum(self._creatsArr*np.array([0,0,0,1/12.,0,0,0.5,0.25,0,0]), axis=1)
+        return np.sum(self._creatsArr*np.array([0,0,0,1/12.,0,0,0.5,0.25,0,1/12.]), axis=1)
     
     def killProportion(self, propToDie):
         toDie = np.argwhere(self._creatsArr[:,0] > 0).flatten()

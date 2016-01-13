@@ -15,9 +15,9 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, rand
     '''
     t0 = time.time()
     if mapFile is not None:
-        world = Environment(natVar=0.1, mapFile=mapFile, randomDeaths=randomDeaths)
+        world = Environment(natVar=0.3, mapFile=mapFile, randomDeaths=randomDeaths)
     else:
-        world = Environment(natVar=0.1, randomDeaths=randomDeaths)
+        world = Environment(natVar=0.3, randomDeaths=randomDeaths)
     resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
     diffDeadCreatures_info = diffDeadCreatures_infoFunc(world.deadCreatures())
@@ -56,7 +56,7 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, rand
         # sim_path = os.path.dirname(sim_directory)
         if os.path.exists(sim_dir) == False:
             os.mkdir(sim_dir)
-        with open(sim_dir+'sim_%s_%s.dat'%(str(int(time.time())), str(noSteps)), 'wb') as out:
+        with open(sim_dir+'sim_%s_%s_%s.dat'%(str(int(time.time())), experimentFunc.__name__, str(noSteps)), 'wb') as out:
             pickler = pickle.Pickler(out, -1)
             pickler.dump([worldHistory, resourcesGRMaxE, np.copy(world.natVar()), world.mapFileDump()])
     return worldHistory
@@ -104,4 +104,4 @@ def allExp(step, world):
         world.livingCreatures().killProportion(0.9)
     return factor
 
-RunSim(increaseResources, noSteps=1000, saveData=True, mapFile='Outdoors2.tmx')
+RunSim(increaseResources, noSteps=1000, saveData=True, mapFile='MediumGrassAndShrubCyclicalIslands.tmx')
