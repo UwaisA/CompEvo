@@ -75,7 +75,7 @@ def randomDeaths(step, world):
 
 def increaseResources(step, world):
     multiplyFactor = 1.04
-    if step > 485 and step < 515:
+    if step > 785 and step < 815:
         world.multiplyResources(multiplyFactor)
         return multiplyFactor
     else:
@@ -104,4 +104,4 @@ def allExp(step, world):
         world.livingCreatures().killProportion(0.9)
     return factor
 
-RunSim(increaseResources, noSteps=1000, saveData=True, mapFile='MediumGrassAndShrubCyclicalIslands.tmx')
+RunSim(increaseResources, noSteps=1600, saveData=True, mapFile='Outdoors2.tmx')

@@ -48,9 +48,9 @@ class Environment(object):
         
         self.__dCreats = DeadCreatures(self)
         self.__lCreats = LivingCreatures(self, self.__dCreats)
-        self.__lCreats.addCreature(1, 30*32, 20*32)
-        self.__lCreats.addCreature(2, 30*32, 30*32)
-        self.__lCreats.addCreature(3, 30*32, 10*32)
+        self.__lCreats.addCreature(1, 10*32, 96*32)
+        self.__lCreats.addCreature(2, 67*32, 10*32)
+        self.__lCreats.addCreature(3, 35*32, 10*32)
         self.__lCreats.addCreature(4, 7*32, 19*32)
         self.__maxCreatureNo = self.__lCreats.creatures() + self.__dCreats.creatures()
         print self.__lCreats
@@ -266,7 +266,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 234, worldHistory[POI+25][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+26))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 235, worldHistory[POI+50][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
     Analyse.plotForCreatures(speedReprThreshMouth, 2, 121, worldHistory[359][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(360))
-    Analyse.plotForCreatures(speedReprThreshMouth, 2, 122, worldHistory[949][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(950))
+    Analyse.plotForCreatures(speedReprThreshMouth, 2, 122, worldHistory[1379][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(950))
     #Analyse.plotForCreatures(speedReprThreshMouth, 3, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI), True)
     #Analyse.findSpecies(worldHistory[POI+599][0], True)
 
