@@ -29,7 +29,7 @@ def plotScatter(fig, subplot, x, y, colour=None, xlabel="x", ylabel="y", title="
     if colour==None:
         plt.scatter(x,y)
     else:
-        plt.scatter(x, y, c=colour, cmap='gist_ncar')
+        plt.scatter(x, y, c=colour, cmap='hsv')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -40,7 +40,7 @@ def plotScatter3D(fig, subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y
     if colour==None:
         ax.scatter(x, y, z)
     else:
-        ax.scatter(x, y, z, c=colour, cmap='gist_ncar')
+        ax.scatter(x, y, z, c=colour, cmap='hsv')
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
@@ -49,9 +49,9 @@ def plotScatter3D(fig, subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y
 '''
 func must take in Creature numpy representation and return x, y value for plot
 '''
-def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y', zlabel='z', title='', plotDendro=False):
+def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y', zlabel='z', title='', plotDendro=False, withAnomCorr=True):
     dims = len(func(livingCreatures[0]))
-    creatSpec = findSpecies(livingCreatures, plotDendro)
+    creatSpec = findSpecies(livingCreatures, plotDendro, withAnomCorr)
     if np.max(creatSpec[:,1])==0:
         colors = np.array(creatSpec[:,1])
     else:
@@ -67,7 +67,7 @@ def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y'
 '''
 livingCreatures should be formatted as a numpy array as it is stored in worldHist
 '''
-def findSpecies(livingCreatures, plotDendro=False):
+def findSpecies(livingCreatures, plotDendro=False, withAnomCorr=True):
     creatureNoList = livingCreatures[:,0]
     creatGens = np.array([livingCreatures[:,4:]])
     xCreat = np.repeat(creatGens, (len(creatGens[0])), axis=0)
@@ -93,25 +93,49 @@ def findSpecies(livingCreatures, plotDendro=False):
                 newToBeAnalysed.remove(nextVal)
                 break
         curSpec += 1
-    species = int(np.max(creatSpec[:,1])+1)
-    print 'creatures:',len(livingCreatures), 'species:', species
+    species = len(set(creatSpec[:,1]))
     if plotDendro:
-        creatSpec[:,1] = dendro(genDist, species)
+        creatSpec[:,1] = dendro(genDist, species, plotDendro)
+    #print creatSpec
     #specCreats = {}
-    #specPops = {}
-    #for creat in creatSpec:
-    #    specCreats[creat[1]] = specCreats.get(creat[1], []) + [creat[0]]
-    #    specPops[creat[1]] = specPops.get(creat[1], 0)+1
+    if withAnomCorr:
+        specPops = {}
+        for creat in creatSpec:
+            #specCreats[creat[1]] = specCreats.get(creat[1], []) + [creat[0]]
+            specPops[creat[1]] = specPops.get(creat[1], 0)+1
+        #anomaly fixing
+        invalidSpecs = set()
+        for spec in specPops.keys():
+            if specPops[spec] < 0.01*len(creatSpec):
+                invalidSpecs.add(spec)
+        invalidCreats = np.argwhere(np.in1d(creatSpec[:,1], list(invalidSpecs))).flatten()
+        for invalid in invalidCreats:
+            for i in xrange(1, len(creatSpec)): #  xrange(1,...) to avoid self-selection
+                argNearbyCreat = np.argwhere(genDist[invalid]==nsmall(genDist[invalid], i, 0)).flat[0]
+                if not argNearbyCreat in invalidCreats:
+                    creatSpec[invalid][1] = creatSpec[argNearbyCreat][1]
+                    break
+        #species list gap removal
+        specsDict = {}
+        specNo = 0
+        for i in xrange(len(creatSpec[:,1])):
+            if not specsDict.has_key(creatSpec[i][1]):
+                specsDict[creatSpec[i][1]] = specNo
+                specNo += 1
+            creatSpec[i][1] = specsDict[creatSpec[i][1]]
+    species = np.max(creatSpec[:,1])+1
+    print 'creatures:',len(livingCreatures), 'species:', species
     #print specPops
     return creatSpec
 
-def dendro(genDist, species):
+def dendro(genDist, species, plotDendro):
     '''
     Returns second column of creatSpec
     '''
     plt.figure()
-    dend = dendrogram(linkage(genDist), p=species, truncate_mode='lastp', count_sort=True)
-    dendFull = dendrogram(linkage(genDist), count_sort=True, no_plot=True)
+    linkArr = linkage(genDist)
+    dend = dendrogram(linkArr, p=species, truncate_mode='lastp', count_sort=True, no_plot=(not plotDendro))
+    dendFull = dendrogram(linkArr, count_sort=True, no_plot=True)
     specCreats1 = []
     for i in dend['ivl']:
         if i.count('(') == 0:

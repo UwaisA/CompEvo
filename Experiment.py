@@ -5,7 +5,7 @@ import numpy as np
 import os
 import cPickle as pickle
 
-def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, randomDeaths=0.07):
+def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, randomDeaths=0.):
     '''Produces nested output list with format:
     [[time0], [time1], [time2],..., [timeEnd]]
     Where each [time] is [livingCreatures, deadCreatures, resources]
@@ -15,9 +15,9 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, rand
     '''
     t0 = time.time()
     if mapFile is not None:
-        world = Environment(mapFile=mapFile, randomDeaths=randomDeaths)
+        world = Environment(natVar=0.3, mapFile=mapFile, randomDeaths=randomDeaths)
     else:
-        world = Environment(randomDeaths=randomDeaths)
+        world = Environment(natVar=0.3, randomDeaths=randomDeaths)
     resourcesGRMaxE = np.copy(world.resources()[1:3,:,:])
     livingCreatures_info = livingCreatures_infoFunc(world.livingCreatures())
     diffDeadCreatures_info = diffDeadCreatures_infoFunc(world.deadCreatures())
@@ -56,7 +56,7 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, rand
         # sim_path = os.path.dirname(sim_directory)
         if os.path.exists(sim_dir) == False:
             os.mkdir(sim_dir)
-        with open(sim_dir+'sim_%s_%s.dat'%(str(int(time.time())), str(noSteps)), 'wb') as out:
+        with open(sim_dir+'sim_%s_%s_%s.dat'%(str(int(time.time())), experimentFunc.__name__, str(noSteps)), 'wb') as out:
             pickler = pickle.Pickler(out, -1)
             pickler.dump([worldHistory, resourcesGRMaxE, np.copy(world.natVar()), world.mapFileDump()])
     return worldHistory
@@ -64,16 +64,18 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, rand
 #Experiment funcs must have step and world as params
 
 def massExtinction(step, world):
-    if step == 500:
+    if step == 700:
         world.livingCreatures().killProportion(0.9)
 
 def randomDeaths(step, world):
-    if step == 1000:
+    if step == 1:
+        world.randomDeaths = 0.03
+    if step == 600:
         world.randomDeaths = 0.
 
 def increaseResources(step, world):
     multiplyFactor = 1.04
-    if step > 485 and step < 515:
+    if step > 785 and step < 815:
         world.multiplyResources(multiplyFactor)
         return multiplyFactor
     else:
