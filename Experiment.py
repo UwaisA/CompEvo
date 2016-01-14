@@ -5,7 +5,7 @@ import numpy as np
 import os
 import cPickle as pickle
 
-def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, randomDeaths=0.):
+def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, randomDeaths=0.07):
     '''Produces nested output list with format:
     [[time0], [time1], [time2],..., [timeEnd]]
     Where each [time] is [livingCreatures, deadCreatures, resources]
@@ -68,7 +68,7 @@ def massExtinction(step, world):
         world.livingCreatures().killProportion(0.9)
 
 def randomDeaths(step, world):
-    if step == 400:
+    if step == 1000:
         world.randomDeaths = 0.
 
 def increaseResources(step, world):
@@ -97,9 +97,9 @@ def allExp(step, world):
         factor = reduceFactor
     if step > 470 and step < 490:
         world.multiplyResources(increaseFactor2)
-        factor = increaseFactor2
+        factor = increaseFactor
     if step == 450:
         world.livingCreatures().killProportion(0.9)
     return factor
 
-RunSim(empty, noSteps=1000, saveData=True, mapFile='MediumGrassAndShrubCyclicalIslands.tmx')
+RunSim(randomDeaths, noSteps=2000, saveData=True, mapFile='Outdoors4.tmx')
