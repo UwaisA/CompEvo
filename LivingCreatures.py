@@ -111,9 +111,10 @@ class LivingCreatures(Creatures):
         for i in xrange(len(gridPosX)):
         #for i in creatExists:
             if creatExists[i]:
-                toLookAt = res0[lims[i,0]:lims[i,1], lims[i,2]:lims[i,3]]
+                toLookAt = np.zeros((2*vis[i]+1, 2*vis[i]+1))
+                addAtPos(toLookAt, res0[lims[i,0]:lims[i,1], lims[i,2]:lims[i,3]], lims[i,4:6])
                 lookAtDist = distFactor(2*vis[i]+1)*speedFactorMult[i]
-                addAtPos(lookAtDist, toLookAt, lims[i,4:6])
+                lookAtDist = toLookAt + ((-lookAtDist)>toLookAt)*lookAtDist
                 randRot = np.random.rand(2) > .5
                 if randRot[0]:
                     lookAtDist = np.flipud(lookAtDist)
