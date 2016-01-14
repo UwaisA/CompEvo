@@ -54,7 +54,9 @@ class LivingCreatures(Creatures):
     
     def costOfLiv(self):
         # energy, aggr, speed, vision - non-zero vals
-        return np.sum(self._creatsArr*np.array([0,0,0,1/12.,0,0,0.5,0.25,0,1/12.]), axis=1)
+        out = self._creatsArr*np.array([0,0,0,1/12.,0,0,0.5,0.25,0,0])
+        out[:,9] = self._creatsArr[:,9].astype(int)*(1/12.)
+        return np.sum(out, axis=1)
     
     def killProportion(self, propToDie):
         toDie = np.argwhere(self._creatsArr[:,0] > 0).flatten()
@@ -105,7 +107,9 @@ class LivingCreatures(Creatures):
         speedFactorMult = self.pxPerTile/(speed*3)*costOfLiv
         res0 = self.enviro().resources()[0]
         creatExists = self._creatsArr[:,0]>0
+        #creatExists = np.argwhere(self._creatsArr[:,0]>0).flatten()
         for i in xrange(len(gridPosX)):
+        #for i in creatExists:
             if creatExists[i]:
                 toLookAt = res0[lims[i,0]:lims[i,1], lims[i,2]:lims[i,3]]
                 lookAtDist = distFactor(2*vis[i]+1)*speedFactorMult[i]
@@ -118,9 +122,9 @@ class LivingCreatures(Creatures):
                 maxDir = np.argmax(lookAtDist)
                 maxDir0, maxDir1 = maxDir/(2*vis[i]+1) - vis[i], maxDir%(2*vis[i]+1) - vis[i]
                 if randRot[0]:
-                    maxDir0 = 2*vis[i]-maxDir0
+                    maxDir0 = -maxDir0
                 if randRot[1]:
-                    maxDir1 = 2*vis[i]-maxDir1
+                    maxDir1 = -maxDir1
                 out[i,0] = maxDir0
                 out[i,1] = maxDir1
         return out

@@ -85,8 +85,8 @@ class Graphics(object):
                 pygame.draw.aalines(self.screen, colour, True, [(trans_pos[0], trans_pos[1]+int(self.th/16.)), (trans_pos[0]+int(self.tw*7./16.), trans_pos[1]+int(self.th/2.)), (trans_pos[0], trans_pos[1]+int(self.th*15./16.)), (trans_pos[0]-int(self.tw*7./16.), trans_pos[1]+int(self.tw/4.))], 1)
         
         trans_pos = self.TransformPos(livingCreatures.allCreats()[:,1:3], multi=True)
-        eOverRT = creatures.allCreats()[:,3]/creatures.allCreats()[:,5]
-        colour = np.ndarray(len(eOverRT), 3)
+        eOverRT = livingCreatures.allCreats()[:,3]/livingCreatures.allCreats()[:,5]
+        colour = np.ndarray((len(eOverRT), 3))
         colour[:,2] = 255
         colour[:,0] = colour[:,1] = np.clip(255*eOverRT,0,255)
         for i, creature in enumerate(livingCreatures.allCreats()):
@@ -214,7 +214,7 @@ class Graphics(object):
                     for j in xrange(len(creatSpec)):
                         if worldFrame[0][i][0] == creatSpec[j][0]:
                             creaturePos = self.TransformPos(np.array([worldFrame[0][i][1], worldFrame[0][i][2]]))
-                            creatureColour = cm.gist_ncar(colours[j], bytes=True)[0:3]
+                            creatureColour = cm.hsv(colours[j], bytes=True)[0:3]
                             pygame.draw.circle(self.screen, self.WHITE, creaturePos, 5)
                             pygame.draw.circle(self.screen, self.BLACK, creaturePos, 4)
                             pygame.draw.circle(self.screen, creatureColour, creaturePos, 2)

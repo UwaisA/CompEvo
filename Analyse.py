@@ -106,7 +106,7 @@ def findSpecies(livingCreatures, plotDendro=False, withAnomCorr=True):
         #anomaly fixing
         invalidSpecs = set()
         for spec in specPops.keys():
-            if specPops[spec] < 0.01*len(creatSpec):
+            if specPops[spec] < max(0.01*len(creatSpec), min(len(creatSpec), 3)):
                 invalidSpecs.add(spec)
         invalidCreats = np.argwhere(np.in1d(creatSpec[:,1], list(invalidSpecs))).flatten()
         for invalid in invalidCreats:
