@@ -69,8 +69,8 @@ def massExtinction(step, world):
 
 def randomDeaths(step, world):
     if step == 1:
-        world.randomDeaths = 0.03
-    if step == 600:
+        world.randomDeaths = 0.04
+    if step == 5000:
         world.randomDeaths = 0.
 
 def increaseResources(step, world):
@@ -104,4 +104,4 @@ def allExp(step, world):
         world.livingCreatures().killProportion(0.9)
     return factor
 
-RunSim(randomDeaths, noSteps=2000, saveData=True, mapFile='Outdoors4.tmx')
+RunSim(randomDeaths, noSteps=10000, saveData=True, mapFile='Outdoors4.tmx')

@@ -49,9 +49,9 @@ def plotScatter3D(fig, subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y
 '''
 func must take in Creature numpy representation and return x, y value for plot
 '''
-def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y', zlabel='z', title='', plotDendro=False, withAnomCorr=True):
+def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y', zlabel='z', title='', useDendro=False, plotDendro=False, withAnomCorr=True):
     dims = len(func(livingCreatures[0]))
-    creatSpec = findSpecies(livingCreatures, plotDendro, withAnomCorr)
+    creatSpec = findSpecies(livingCreatures, useDendro, plotDendro, withAnomCorr)
     if np.max(creatSpec[:,1])==0:
         colors = np.array(creatSpec[:,1])
     else:
@@ -67,7 +67,7 @@ def plotForCreatures(func, fig, subplot, livingCreatures, xlabel='x', ylabel='y'
 '''
 livingCreatures should be formatted as a numpy array as it is stored in worldHist
 '''
-def findSpecies(livingCreatures, plotDendro=False, withAnomCorr=True):
+def findSpecies(livingCreatures, useDendro=False, plotDendro=False, withAnomCorr=True):
     creatureNoList = livingCreatures[:,0]
     creatGens = np.array([livingCreatures[:,4:]])
     xCreat = np.repeat(creatGens, (len(creatGens[0])), axis=0)
@@ -94,7 +94,7 @@ def findSpecies(livingCreatures, plotDendro=False, withAnomCorr=True):
                 break
         curSpec += 1
     species = len(set(creatSpec[:,1]))
-    if plotDendro:
+    if useDendro:
         creatSpec[:,1] = dendro(genDist, species, plotDendro)
     #print creatSpec
     #specCreats = {}
@@ -132,10 +132,11 @@ def dendro(genDist, species, plotDendro):
     '''
     Returns second column of creatSpec
     '''
-    plt.figure()
+    if plotDendro:
+        plt.figure()
     linkArr = linkage(genDist)
-    dend = dendrogram(linkArr, p=species, truncate_mode='lastp', count_sort=True, no_plot=(not plotDendro))
-    dendFull = dendrogram(linkArr, count_sort=True, no_plot=True)
+    dend = dendrogram(linkArr, p=species, truncate_mode='lastp', count_sort=True, no_plot=True)
+    dendFull = dendrogram(linkArr, count_sort=True, no_plot=(not plotDendro))
     specCreats1 = []
     for i in dend['ivl']:
         if i.count('(') == 0:

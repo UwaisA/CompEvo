@@ -43,6 +43,13 @@ class Environment(object):
         self.__lCreats.addCreature(4, 23*32, 80*32)
         self.__lCreats.addCreature(5, 43*32, 23*32)
         self.__lCreats.addCreature(6, 17*32, 90*32)
+        self.__lCreats.addCreature(7, 19*32, 89*32)
+        self.__lCreats.addCreature(8, 25*32, 75*32)
+        self.__lCreats.addCreature(9, 90*32, 10*32)
+        self.__lCreats.addCreature(10, 23*32, 70*32)
+        self.__lCreats.addCreature(11, 20*32, 15*32)
+        self.__lCreats.addCreature(12, 45*32, 50*32)
+        self.__lCreats.addCreature(13, 45*32, 70*32)
         self.__maxCreatureNo = self.__lCreats.creatures() + self.__dCreats.creatures()
         print self.__lCreats
 
@@ -215,7 +222,7 @@ def biodiversity(step, worldHistory):
     '''Simpson's definition of diversity:
     1 - (probability of two randomly chosen items being in the same group)
     '''
-    creatSpec = Analyse.findSpecies(worldHistory[step][0])
+    creatSpec = Analyse.findSpecies(worldHistory[step][0], True)
     specPops = {}
     for creat in creatSpec:
         specPops[creat[1]] = specPops.get(creat[1], 0)+1
@@ -258,8 +265,8 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 233, worldHistory[POI+5][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+6))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 234, worldHistory[POI+25][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+26))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 235, worldHistory[POI+50][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
-    Analyse.plotForCreatures(speedReprThreshMouth, 2, 121, worldHistory[359][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(360))
-    Analyse.plotForCreatures(speedReprThreshMouth, 2, 122, worldHistory[1379][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(1380))
+    Analyse.plotForCreatures(speedReprThreshMouth, 2, 121, worldHistory[2499][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(2500), True)
+    Analyse.plotForCreatures(speedReprThreshMouth, 2, 122, worldHistory[7499][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(7500), True)
     #Analyse.plotForCreatures(speedReprThreshMouth, 3, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI), True)
     #Analyse.findSpecies(worldHistory[POI+599][0], True)
 
