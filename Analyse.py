@@ -1,7 +1,6 @@
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-import time
 from scipy.cluster.hierarchy import dendrogram, linkage
 
 '''
@@ -29,7 +28,7 @@ def plotScatter(fig, subplot, x, y, colour=None, xlabel="x", ylabel="y", title="
     if colour==None:
         plt.scatter(x,y)
     else:
-        plt.scatter(x, y, c=colour, cmap='hsv')
+        plt.scatter(x, y, c=colour, cmap='gist_rainbow')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -40,7 +39,7 @@ def plotScatter3D(fig, subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y
     if colour==None:
         ax.scatter(x, y, z)
     else:
-        ax.scatter(x, y, z, c=colour, cmap='hsv')
+        ax.scatter(x, y, z, c=colour, cmap='gist_rainbow')
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
@@ -74,7 +73,7 @@ def findSpecies(livingCreatures, plotDendro=False, withAnomCorr=True):
     yCreat = xCreat.transpose((1,0,2))
     genDist = np.sqrt(np.sum((xCreat-yCreat)**2, axis=2))
     nearestCreatArr = nsmall(genDist, 1, 0)
-    specieRad = nsmall(nearestCreatArr, int(0.93*len(nearestCreatArr)+0.5)-1, 0)
+    specieRad = nsmall(nearestCreatArr, int(0.95*len(nearestCreatArr)+0.5)-1, 0)
     sameSpecies = genDist<=specieRad
     creatSpec = np.ndarray((len(livingCreatures), 2), dtype=int)
     creatSpec[:,0] = creatureNoList
