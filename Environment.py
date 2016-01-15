@@ -262,13 +262,8 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 233, worldHistory[POI+5][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+6))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 234, worldHistory[POI+25][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+26))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 235, worldHistory[POI+50][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
-<<<<<<< HEAD
     Analyse.plotForCreatures(speedReprThreshMouth, 2, 121, worldHistory[59][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(60))
     Analyse.plotForCreatures(speedReprThreshMouth, 2, 122, worldHistory[1219][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(1220))
-=======
-    Analyse.plotForCreatures(speedReprThreshMouth, 2, 121, worldHistory[2499][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(2500), True)
-    Analyse.plotForCreatures(speedReprThreshMouth, 2, 122, worldHistory[7499][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(7500), True)
->>>>>>> 423890186d1bbe8340ca9485124a83e874c472ee
     #Analyse.plotForCreatures(speedReprThreshMouth, 3, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI), True)
     #Analyse.findSpecies(worldHistory[POI+599][0], True)
 
