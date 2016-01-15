@@ -105,6 +105,6 @@ def allExp(step, world):
     return factor
 
 #RunSim(increaseResources, noSteps=2000, saveData=True, mapFile='Outdoors5.tmx')
-RunSim(empty, noSteps=2000, saveData=True, mapFile='Outdoors4.tmx')
-#RunSim(massExtinction, noSteps=2000, saveData=True, mapFile='Outdoors4.tmx')
+RunSim(empty, noSteps=2000, saveData=True, mapFile='Outdoors5.tmx')
+#RunSim(massExtinction, noSteps=2000, saveData=True, mapFile='Outdoors5.tmx')
 

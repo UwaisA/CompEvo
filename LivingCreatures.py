@@ -53,8 +53,8 @@ class LivingCreatures(Creatures):
         return self._creatsArr[self._creatsArr[:,0] > 0]
     
     def costOfLiv(self):
-        # energy, aggr, speed, vision - non-zero vals
-        out = self._creatsArr*np.array([0,0,0,1/12.,0,0,0.5,0.25,0,0])
+        # energy, speed, mouthsize, vision - non-zero vals
+        out = self._creatsArr*np.array([0,0,0,1/12.,0,0,0,0.25,0.15,0])
         out[:,9] = self._creatsArr[:,9].astype(int)*(1/12.)
         return np.sum(out, axis=1)
     
