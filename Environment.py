@@ -119,7 +119,7 @@ class Environment(object):
             resKiller[resKiller > propWithRes] = 1
             resKiller[resKiller <= propWithRes] = 0
             resKiller = 1 - resKiller
-        resources *= resKiller*0.6
+        resources *= resKiller*0.3
         return resources
     
     def resources_grow(self):
@@ -219,7 +219,7 @@ def biodiversity(step, worldHistory):
     '''Simpson's definition of diversity:
     1 - (probability of two randomly chosen items being in the same group)
     '''
-    creatSpec = Analyse.findSpecies(worldHistory[step][0], True)
+    creatSpec = Analyse.findSpecies(worldHistory[step][0])
     specPops = {}
     for creat in creatSpec:
         specPops[creat[1]] = specPops.get(creat[1], 0)+1

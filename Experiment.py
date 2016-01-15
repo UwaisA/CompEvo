@@ -64,18 +64,18 @@ def RunSim(experimentFunc=None, noSteps=500, saveData=True, mapFile = None, rand
 #Experiment funcs must have step and world as params
 
 def massExtinction(step, world):
-    if step == 700:
+    if step == 1000:
         world.livingCreatures().killProportion(0.9)
 
 def randomDeaths(step, world):
     if step == 1:
         world.randomDeaths = 0.04
-    if step == 5000:
+    if step == 1000:
         world.randomDeaths = 0.
 
 def increaseResources(step, world):
     multiplyFactor = 1.04
-    if step > 785 and step < 815:
+    if step > 990 and step < 1010:
         world.multiplyResources(multiplyFactor)
         return multiplyFactor
     else:
@@ -104,4 +104,7 @@ def allExp(step, world):
         world.livingCreatures().killProportion(0.9)
     return factor
 
-RunSim(randomDeaths, noSteps=1500, saveData=True, mapFile='Outdoors4.tmx')
+#RunSim(increaseResources, noSteps=2000, saveData=True, mapFile='Outdoors5.tmx')
+RunSim(empty, noSteps=2000, saveData=True, mapFile='Outdoors4.tmx')
+#RunSim(massExtinction, noSteps=2000, saveData=True, mapFile='Outdoors4.tmx')
+
