@@ -38,7 +38,7 @@ def plotScatter(fig, subplot, x, y, colour=None, xlabel="x", ylabel="y", title="
     if colour==None:
         plt.scatter(x,y)
     else:
-        plt.scatter(x, y, c=colour, cmap='hsv')
+        plt.scatter(x, y, c=colour, cmap='gist_rainbow')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -49,7 +49,7 @@ def plotScatter3D(fig, subplot, x, y, z=None, colour=None, xlabel="x", ylabel="y
     if colour==None:
         ax.scatter(x, y, z)
     else:
-        ax.scatter(x, y, z, c=colour, cmap='hsv')
+        ax.scatter(x, y, z, c=colour, cmap='gist_rainbow')
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
@@ -83,7 +83,7 @@ def findSpecies(livingCreatures, useDendro=False, plotDendro=False, withAnomCorr
     yCreat = xCreat.transpose((1,0,2))
     genDist = np.sqrt(np.sum((xCreat-yCreat)**2, axis=2))
     nearestCreatArr = nsmall(genDist, 1, 0)
-    specieRad = nsmall(nearestCreatArr, int(0.99*len(nearestCreatArr)+0.5)-1, 0)
+    specieRad = nsmall(nearestCreatArr, int(0.93*len(nearestCreatArr)+0.5)-1, 0)
     sameSpecies = genDist<=specieRad
     creatSpec = np.ndarray((len(livingCreatures), 2), dtype=int)
     creatSpec[:,0] = creatureNoList
@@ -115,7 +115,7 @@ def findSpecies(livingCreatures, useDendro=False, plotDendro=False, withAnomCorr
         #anomaly fixing
         invalidSpecs = set()
         for spec in specPops.keys():
-            if specPops[spec] < 0.01*len(creatSpec):
+            if specPops[spec] < max(0.01*len(creatSpec), min(len(creatSpec), 3)):
                 invalidSpecs.add(spec)
         invalidCreats = np.argwhere(np.in1d(creatSpec[:,1], list(invalidSpecs))).flatten()
         for invalid in invalidCreats:

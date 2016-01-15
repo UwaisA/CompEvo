@@ -105,3 +105,4 @@ def allExp(step, world):
     return factor
 
 RunSim(empty, noSteps=2000, saveData=True, mapFile='Outdoors4.tmx')
+

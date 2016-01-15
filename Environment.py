@@ -119,7 +119,7 @@ class Environment(object):
             resKiller[resKiller > propWithRes] = 1
             resKiller[resKiller <= propWithRes] = 0
             resKiller = 1 - resKiller
-        resources *= resKiller*0.75
+        resources *= resKiller*0.6
         return resources
     
     def resources_grow(self):
@@ -201,22 +201,19 @@ def totERes(step, worldHistory):
     return np.sum(worldHistory[step][2])
 
 def avgSpeed(step, worldHistory):
-    totSpeed = sum(creature[7] for creature in worldHistory[step][0])
-    if totSpeed == 0:
+    if totPop(step, worldHistory)==0:
         return 0
-    return float(totSpeed)/totPop(step, worldHistory)
+    return np.mean(worldHistory[step][0][:,7])
 
 def avgTR(step, worldHistory):
-    totTR = sum(creature[5] for creature in worldHistory[step][0])
-    if totTR == 0:
+    if totPop(step, worldHistory)==0:
         return 0
-    return float(totTR)/totPop(step, worldHistory)
+    return np.mean(worldHistory[step][0][:,5])
 
 def avgVis(step, worldHistory):
-    totVis = sum(creature[9] for creature in worldHistory[step][0])
-    if totVis == 0:
+    if totPop(step, worldHistory)==0:
         return 0
-    return float(totVis)/totPop(step, worldHistory)
+    return np.mean(worldHistory[step][0][:,9])
 
 def biodiversity(step, worldHistory):
     '''Simpson's definition of diversity:
@@ -260,6 +257,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     Analyse.plotForSteps(avgVis, 1, 234, len(worldHistory), "Avg Vis", 'go-', 1, (worldHistory))
     Analyse.plotForSteps(totERes, 1, 235, len(worldHistory), "Resource Energy", 'yo-', 1, (worldHistory))
     Analyse.plotMeanSteps(biodiversity, 1, 236, len(worldHistory), "Biodiversity", 'bo-', 8, 5, (worldHistory))
+    
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 231, worldHistory[POI-5][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI-4))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 232, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+1))
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 233, worldHistory[POI+5][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+6))
@@ -267,6 +265,7 @@ def DisplaySim(worldHistory, resourcesGRMaxE, displayVisualSim=True, mapFile=Non
     #Analyse.plotForCreatures(speedReprThreshMouth, 2, 235, worldHistory[POI+50][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI+51))
     Analyse.plotForCreatures(speedReprThreshMouth, 2, 121, worldHistory[499][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(500), False)
     Analyse.plotForCreatures(speedReprThreshMouth, 2, 122, worldHistory[1499][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(1500), False)
+    
     #Analyse.plotForCreatures(speedReprThreshMouth, 3, 111, worldHistory[POI][0], 'Speed', 'Repr Thresh', 'Mouth Size', 'Genetics Plot in %dth step'%(POI), True)
     #Analyse.findSpecies(worldHistory[POI+599][0], True)
 
