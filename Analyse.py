@@ -14,6 +14,15 @@ def plotForSteps(func, fig, subplot, maxSteps, funcName="func Name", colour='ro-
         yRes[i] = func(xi, *funcargs)
     plot(fig, subplot, xRes, yRes, colour=colour, xlabel="Step number", ylabel=funcName, title=funcName+" vs Time")
 
+def plotMeanSteps(func, fig, subplot, maxSteps, funcName="func Name", colour='ro-', stepInterval=1, meanStepsNo=1, *funcargs):
+    xRes = np.arange(0, maxSteps, stepInterval)
+    yRes = np.zeros(len(xRes))
+    for i, xi in enumerate(xRes):
+        yRes[i] = func(xi, *funcargs)
+    yMeanRes = yRes[:((len(yRes)/meanStepsNo)*meanStepsNo)].reshape((len(yRes)/meanStepsNo,meanStepsNo)).sum(axis=1)/float(meanStepsNo)
+    xMeanRes = xRes[:((len(xRes)/meanStepsNo)*meanStepsNo)].reshape((len(xRes)/meanStepsNo,meanStepsNo)).sum(axis=1)/float(meanStepsNo)
+    plot(fig, subplot, xMeanRes, yMeanRes, colour=colour, xlabel="Step number", ylabel=funcName, title=funcName+" vs Time")
+
 #draws a line graph using the parameters passed to it
 def plot(fig, subplot, x, y, colour = 'ro-', xlabel = "x", ylabel = "y", title = "Title"):
     plt.figure(fig)

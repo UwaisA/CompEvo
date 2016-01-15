@@ -104,4 +104,4 @@ def allExp(step, world):
         world.livingCreatures().killProportion(0.9)
     return factor
 
-RunSim(randomDeaths, noSteps=10000, saveData=True, mapFile='Outdoors4.tmx')
+RunSim(empty, noSteps=2000, saveData=True, mapFile='Outdoors4.tmx')
